@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Atividades{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="text-center mb-5">
+    <h1 class="fw-black" style="font-size:2.2rem">🎯 Atividades</h1>
+    <p style="color:var(--text-2);font-size:1.1rem">Escolha uma atividade para começar</p>
+  </div>
+  <div class="ctea-act-grid">
+    {% if atividades %}
+      {% for at in atividades %}
+      <a href="{{ at.get_absolute_url }}" class="ctea-act-card" style="--card-color:{{ at.cor_tema }}">
+        <div class="act-icon">{{ at.icone }}</div>
+        <h3>{{ at.titulo }}</h3>
+        <p>{{ at.descricao }}</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      {% endfor %}
+    {% else %}
+      <a href="{% url 'atividades:sentimentos' %}" class="ctea-act-card" style="--card-color:#FF6B6B">
+        <div class="act-icon">😊</div><h3>Como estou me sentindo?</h3>
+        <p>Expresse seus sentimentos com cartões ilustrados</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:necessidades' %}" class="ctea-act-card" style="--card-color:#38BDF8">
+        <div class="act-icon">🙋</div><h3>O que eu preciso?</h3>
+        <p>Comunique suas necessidades rapidamente</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:monte_frase' %}" class="ctea-act-card" style="--card-color:#A78BFA">
+        <div class="act-icon">💬</div><h3>Monte sua frase</h3>
+        <p>Construa frases com pictogramas e palavras</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:escolha' %}" class="ctea-act-card" style="--card-color:#34D399">
+        <div class="act-icon">✨</div><h3>Escolha o que prefere</h3>
+        <p>Diga o que você prefere entre duas opções</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:encontre' %}" class="ctea-act-card" style="--card-color:#FBBF24">
+        <div class="act-icon">🔍</div><h3>Encontre o pictograma</h3>
+        <p>Explore e identifique imagens e símbolos</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:rotina' %}" class="ctea-act-card" style="--card-color:#F472B6">
+        <div class="act-icon">📅</div><h3>Minha rotina visual</h3>
+        <p>Monte e acompanhe a rotina do seu dia</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:sim_nao' %}" class="ctea-act-card" style="--card-color:#FB923C">
+        <div class="act-icon">✅</div><h3>Sim ou Não</h3>
+        <p>Expresse concordância, recusa e incerteza</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:frutas_sombras' %}" class="ctea-act-card" style="--card-color:#6B9B5D">
+        <div class="act-icon">🍎</div><h3>Leve a fruta até a sombra</h3>
+        <p>Associe as frutas às sombras e ouça o nome de cada uma</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:animais_sombras' %}" class="ctea-act-card" style="--card-color:#6B9B5D">
+        <div class="act-icon">🐘</div><h3>Leve o animal até a sombra</h3>
+        <p>Associe animais às sombras e ouça o nome de cada um</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:encaixe_animais' %}" class="ctea-act-card" style="--card-color:#F29D38">
+        <div class="act-icon">🧩</div><h3>Encaixe as figuras: animais</h3>
+        <p>Complete figuras de animais e ouça o nome de cada uma</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:encaixe_natureza' %}" class="ctea-act-card" style="--card-color:#34A89A">
+        <div class="act-icon">🌼</div><h3>Encaixe as figuras: natureza</h3>
+        <p>Complete figuras da natureza e ouça o nome de cada uma</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:objeto_acao' %}" class="ctea-act-card" style="--card-color:#38BDF8">
+        <div class="act-icon">🧼</div><h3>Que objeto pode me ajudar?</h3>
+        <p>Associe situações do dia a dia aos objetos que podem ajudar</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

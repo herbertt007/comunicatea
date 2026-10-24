@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Que objeto pode me ajudar?{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(56,189,248,0.35)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'atividades:lista' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm" aria-label="Voltar às atividades"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#0284C7">🧼 Que objeto pode me ajudar?</h1>
+        <p class="ctea-act-question" id="situacao">Preparando a atividade...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctea-card mb-4">
+    <p class="mb-2"><strong>Escolha um objeto que pode ajudar nessa situação.</strong></p>
+    <p class="mb-0">Toque em uma figura. Você pode ouvir a pergunta de novo. Não há pressa.</p>
+    <button class="btn-ctea btn-voice mt-3" type="button" data-atividade-acao="ouvir"><i class="bi bi-volume-up"></i> Ouvir situação</button>
+  </div>
+
+  <div id="opcoes" class="ctea-pic-grid justify-content-center" aria-label="Opções de objetos"></div>
+  <div id="feedback" class="ctea-response mt-4" style="display:none" aria-live="polite" aria-atomic="true"></div>
+  <div class="text-center mt-4">
+    <p id="progresso" class="mb-3" style="color:var(--text-3)"></p>
+    <button id="proxima" class="btn-ctea btn-ctea-primary" type="button" data-atividade-acao="proxima" hidden>Próxima situação <i class="bi bi-arrow-right-circle"></i></button>
+  </div>
+</div>
+
+<script>
+const rodadas = {{ rodadas_json|safe }};
+let indiceRodada = 0;
+let rodadaConcluida = false;
+
+function falarOuAguardar(texto) {
+  if (typeof window.falarTexto === 'function') {
+    window.falarTexto(texto);
+  } else {
+    window.addEventListener('DOMContentLoaded', () => window.falarTexto?.(texto), { once: true });
+  }
+}
+
+function renderRodada() {
+  const opcoes = document.getElementById('opcoes');
+  const feedback = document.getElementById('feedback');
+  const proxima = document.getElementById('proxima');
+  feedback.style.display = 'none';
+  proxima.hidden = true;
+  rodadaConcluida = false;
+
+  if (indiceRodada >= rodadas.length) {
+    document.getElementById('situacao').textContent = '🎉 Você explorou todas as situações!';
+    document.getElementById('progresso').textContent = '';
+    opcoes.innerHTML = '<div class="text-center py-3 w-100"><button class="btn-ctea btn-ctea-primary" type="button" data-atividade-acao="reiniciar"><i class="bi bi-arrow-counterclockwise"></i> Começar de novo</button></div>';
+    falarOuAguardar('Você explorou todas as situações. Parabéns!');
+    return;
+  }
+
+  const rodada = rodadas[indiceRodada];
+  document.getElementById('situacao').textContent = rodada.situacao;
+  document.getElementById('progresso').textContent = `Situação ${indiceRodada + 1} de ${rodadas.length}`;
+  opcoes.replaceChildren();
+  rodada.opcoes.forEach((opcao, indice) => {
+    const cartao = document.createElement('button');
+    cartao.type = 'button';
+    cartao.className = 'ctea-pic-card';
+    cartao.style.fontFamily = 'inherit';
+    cartao.style.setProperty('--card-color', '#38BDF8');
+    cartao.setAttribute('aria-label', opcao.nome);
+    cartao.dataset.opcaoIndice = indice;
+    cartao.innerHTML = `<span class="pic-emoji">${opcao.emoji}</span><span class="pic-label">${opcao.nome}</span>`;
+    opcoes.appendChild(cartao);
+  });
+  falarOuAguardar(rodada.situacao);
+}
+
+function escolher(opcao, cartao) {
+  if (rodadaConcluida) return;
+  const feedback = document.getElementById('feedback');
+  feedback.style.display = 'block';
+  if (opcao.correta) {
+    rodadaConcluida = true;
+    cartao.classList.add('selected');
+    document.querySelectorAll('#opcoes button[data-opcao-indice]').forEach(opcao => { opcao.disabled = true; });
+    feedback.style.borderColor = '#38BDF8';
+    feedback.innerHTML = `<div class="response-emoji">${opcao.emoji}</div><div class="response-text">Isso mesmo! ${opcao.nome} pode ajudar.</div>`;
+    document.getElementById('proxima').hidden = false;
+    falarOuAguardar(`Isso mesmo! ${opcao.nome} pode ajudar.`);
+    if (window.registrarSessao) registrarSessao('objeto_acao', opcao.nome);
+  } else {
+    feedback.style.borderColor = '#FBBF24';
+    feedback.innerHTML = '<div class="response-emoji">🤔</div><div class="response-text">Boa tentativa. Vamos olhar as opções de novo.</div>';
+    falarOuAguardar('Boa tentativa. Vamos olhar as opções de novo.');
+  }
+}
+
+function ouvirSituacao() {
+  if (rodadas[indiceRodada]) falarOuAguardar(rodadas[indiceRodada].situacao);
+}
+
+// O VLibras pode capturar cliques quando seu modo de interação está ativo.
+// Tratamos primeiro os cliques nas opções para que a atividade continue jogável.
+window.addEventListener('click', (evento) => {
+  const controle = evento.target.closest?.('[data-atividade-acao], #opcoes button[data-opcao-indice]');
+  if (!controle) return;
+  evento.preventDefault();
+  if (controle.dataset.atividadeAcao === 'ouvir') {
+    ouvirSituacao();
+    return;
+  }
+  if (controle.dataset.atividadeAcao === 'proxima') {
+    indiceRodada += 1;
+    renderRodada();
+    return;
+  }
+  if (controle.dataset.atividadeAcao === 'reiniciar') {
+    indiceRodada = 0;
+    renderRodada();
+    return;
+  }
+  const indice = Number(controle.dataset.opcaoIndice);
+  const opcao = rodadas[indiceRodada]?.opcoes[indice];
+  if (opcao) escolher(opcao, controle);
+}, true);
+
+renderRodada();
+</script>
+{% endblock %}

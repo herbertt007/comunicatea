@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Minha rotina visual{% endblock %}
+{% block extra_css %}
+<style>
+  .routine-item { touch-action: none; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(244,114,182,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#BE185D">📅 Minha rotina visual</h1>
+        <p class="ctea-act-question">Organize e acompanhe as atividades do seu dia</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="ctea-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="ctea-card-title mb-0">Minha rotina de hoje</h2>
+          <button class="btn-ctea btn-ctea-outline btn-ctea-sm" onclick="resetarRotina()">
+            <i class="bi bi-arrow-counterclockwise"></i> Reiniciar
+          </button>
+        </div>
+        <ul class="routine-list" id="routineList"></ul>
+        <div id="conclusao" style="display:none" class="text-center py-3">
+          <div style="font-size:3rem">🎉</div>
+          <p class="fw-bold mt-2">Parabéns! Você completou sua rotina!</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="ctea-card">
+        <h3 class="ctea-card-title">➕ Adicionar etapa</h3>
+        <div class="ctea-lib-grid" id="etapasDisponiveis"></div>
+      </div>
+    </div>
+  </div>
+  <p class="text-center mt-3 small" style="color:var(--text-3)">
+    <i class="bi bi-arrows-move"></i> Arraste para reordenar · Toque em ⬜ para marcar como concluído
+  </p>
+</div>
+<script>
+const etapasPadrao = {{ etapas_json|safe }};
+let rotina = [...etapasPadrao];
+let concluidos = new Set();
+
+function renderRotina() {
+  const list = document.getElementById('routineList');
+  list.innerHTML = '';
+  if (rotina.length === 0) {
+    list.innerHTML = '<li class="text-center py-3" style="color:var(--text-3)">Adicione etapas à sua rotina</li>';
+    return;
+  }
+  rotina.forEach((e, i) => {
+    const li = document.createElement('li');
+    li.className = 'routine-item' + (concluidos.has(i) ? ' completed' : '');
+    li.draggable = true;
+    li.dataset.idx = i;
+    li.innerHTML = `
+      <span class="ri-drag">⠿</span>
+      <span class="ri-emoji">${e.emoji}</span>
+      <span class="ri-text">${e.label}</span>
+      <span class="ri-check ${concluidos.has(i) ? 'done' : ''}" onclick="toggleConcluido(${i})"></span>
+      <button onclick="removerEtapa(${i})" style="border:none;background:none;color:var(--text-3);cursor:pointer;font-size:1.1rem" title="Remover">✕</button>`;
+    li.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', i));
+    li.addEventListener('dragover', e => { e.preventDefault(); li.classList.add('drag-over'); });
+    li.addEventListener('dragleave', () => li.classList.remove('drag-over'));
+    li.addEventListener('drop', e => {
+      e.preventDefault(); li.classList.remove('drag-over');
+      const from = parseInt(e.dataTransfer.getData('text/plain'));
+      const to = parseInt(li.dataset.idx);
+      if (from !== to) { [rotina[from], rotina[to]] = [rotina[to], rotina[from]]; renderRotina(); }
+    });
+    list.appendChild(li);
+  });
+  verificarConclusao();
+}
+
+function toggleConcluido(i) {
+  if (concluidos.has(i)) concluidos.delete(i); else concluidos.add(i);
+  renderRotina();
+}
+function removerEtapa(i) { rotina.splice(i, 1); concluidos.clear(); renderRotina(); }
+function resetarRotina() { rotina = [...etapasPadrao]; concluidos.clear(); renderRotina(); }
+function verificarConclusao() {
+  document.getElementById('conclusao').style.display = concluidos.size === rotina.length && rotina.length > 0 ? 'block' : 'none';
+}
+
+function renderDisponiveis() {
+  const grid = document.getElementById('etapasDisponiveis');
+  etapasPadrao.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'ctea-lib-card';
+    div.style.cursor = 'pointer';
+    div.innerHTML = `<div class="lib-emoji">${e.emoji}</div><div class="lib-word">${e.label}</div>`;
+    div.onclick = () => { rotina.push({...e}); renderRotina(); };
+    grid.appendChild(div);
+  });
+}
+
+renderRotina();
+renderDisponiveis();
+</script>
+{% endblock %}

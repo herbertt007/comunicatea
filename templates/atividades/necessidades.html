@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}O que eu preciso?{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(56,189,248,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#0284C7">🙋 O que eu preciso?</h1>
+        <p class="ctea-act-question">Toque no cartão do que você precisa agora</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="resposta" class="ctea-response mb-4" style="display:none;border-color:#38BDF8;background:linear-gradient(135deg,#EFF6FF,white)">
+    <div id="resp-emoji" class="response-emoji"></div>
+    <div id="resp-texto" class="response-text"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+      <button class="btn-ctea btn-voice" onclick="lerNecessidade()"><i class="bi bi-volume-up"></i> Ouvir</button>
+      <button class="btn-ctea btn-ctea-outline" onclick="limpar()"><i class="bi bi-arrow-counterclockwise"></i> Outra</button>
+    </div>
+  </div>
+
+  <div class="ctea-pic-grid">
+    {% for c in cartoes %}
+    <div class="ctea-pic-card" style="--card-color:{{ c.cor }}"
+         onclick="selecionarNecessidade(this,'{{ c.emoji }}','{{ c.label }}','{{ c.mensagem }}')"
+         role="button" aria-label="{{ c.label }}" tabindex="{{ forloop.counter }}">
+      <span class="pic-emoji">{{ c.emoji }}</span>
+      <span class="pic-label">{{ c.label }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+let textoAtual = '';
+function selecionarNecessidade(el, emoji, label, msg) {
+  document.querySelectorAll('.ctea-pic-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('resp-emoji').textContent = emoji;
+  document.getElementById('resp-texto').textContent = msg;
+  document.getElementById('resposta').style.display = 'block';
+  textoAtual = msg;
+  falarTexto(msg);
+  if (window.registrarSessao) registrarSessao('necessidades', label);
+}
+function lerNecessidade() { falarTexto(textoAtual); }
+function limpar() {
+  document.querySelectorAll('.ctea-pic-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('resposta').style.display = 'none';
+}
+</script>
+{% endblock %}

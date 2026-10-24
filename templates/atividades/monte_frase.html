@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}Monte sua frase{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(167,139,250,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#7C3AED">💬 Monte sua frase</h1>
+        <p class="ctea-act-question">Selecione as palavras para montar uma frase</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área da frase -->
+  <div class="ctea-sentence-area mb-3" id="fraseArea" aria-label="Frase montada" aria-live="polite">
+    <span class="ctea-sentence-placeholder" id="placeholder">Toque nos cartões abaixo para montar sua frase...</span>
+  </div>
+
+  <!-- Botões de controle -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <button class="btn-ctea btn-voice" onclick="lerFrase()" id="btnLer" disabled>
+      <i class="bi bi-volume-up"></i> Ouvir frase
+    </button>
+    <button class="btn-ctea btn-ctea-outline btn-ctea-sm" onclick="removerUltimo()">
+      <i class="bi bi-backspace"></i> Remover último
+    </button>
+    <button class="btn-ctea btn-ctea-sm btn-danger-soft" onclick="limparFrase()">
+      <i class="bi bi-trash"></i> Limpar
+    </button>
+  </div>
+
+  <!-- Cartões por grupo -->
+  <div class="mb-3">
+    <p class="fw-bold mb-2" style="color:var(--text-3);font-size:0.85rem;text-transform:uppercase">Sujeito</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+      {% for c in sujeitos %}
+      <div class="ctea-pic-card" style="min-width:110px;--card-color:#A78BFA" onclick="adicionarPalavra('{{ c.emoji }}','{{ c.palavra }}')" role="button" tabindex="0">
+        <span class="pic-emoji">{{ c.emoji }}</span>
+        <span class="pic-label">{{ c.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="mb-3">
+    <p class="fw-bold mb-2" style="color:var(--text-3);font-size:0.85rem;text-transform:uppercase">Verbo / Ação</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+      {% for c in verbos %}
+      <div class="ctea-pic-card" style="min-width:120px;--card-color:#F472B6" onclick="adicionarPalavra('{{ c.emoji }}','{{ c.palavra }}')" role="button" tabindex="0">
+        <span class="pic-emoji">{{ c.emoji }}</span>
+        <span class="pic-label">{{ c.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="mb-3">
+    <p class="fw-bold mb-2" style="color:var(--text-3);font-size:0.85rem;text-transform:uppercase">Complemento</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+      {% for c in complementos %}
+      <div class="ctea-pic-card" style="min-width:110px;--card-color:#22C55E" onclick="adicionarPalavra('{{ c.emoji }}','{{ c.palavra }}')" role="button" tabindex="0">
+        <span class="pic-emoji">{{ c.emoji }}</span>
+        <span class="pic-label">{{ c.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+let palavras = [];
+function adicionarPalavra(emoji, palavra) {
+  palavras.push({emoji, palavra});
+  renderFrase();
+  if (window.registrarSessao) registrarSessao('monte_frase', palavra);
+}
+function removerUltimo() { palavras.pop(); renderFrase(); }
+function limparFrase() { palavras = []; renderFrase(); }
+function renderFrase() {
+  const area = document.getElementById('fraseArea');
+  const placeholder = document.getElementById('placeholder');
+  const btnLer = document.getElementById('btnLer');
+  area.querySelectorAll('.ctea-chip').forEach(c => c.remove());
+  if (palavras.length === 0) {
+    placeholder.style.display = '';
+    btnLer.disabled = true;
+    return;
+  }
+  placeholder.style.display = 'none';
+  btnLer.disabled = false;
+  palavras.forEach(p => {
+    const chip = document.createElement('span');
+    chip.className = 'ctea-chip';
+    chip.innerHTML = `<span class="chip-emoji">${p.emoji}</span> ${p.palavra}`;
+    area.appendChild(chip);
+  });
+}
+function lerFrase() {
+  const texto = palavras.map(p => p.palavra).join(' ') + '.';
+  if (window.falarTexto) falarTexto(texto);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/encaixe-figuras.css' %}">{% endblock %}
+{% block content %}
+<section class="fit-activity" aria-labelledby="fit-title">
+  <div class="fit-shell">
+    <svg class="fit-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+ <symbol id="figure-casa" viewBox="0 0 100 100">
+  <path d="M12 47 50 15l38 32" fill="#f06453" stroke="#30333b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22 43V32h13v1" fill="#e98b55" stroke="#30333b" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M22 46 50 23l28 23v39H22z" fill="#ffe08a" stroke="#30333b" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M42 62a8 8 0 0 1 16 0v23H42z" fill="#a96043" stroke="#30333b" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="53" cy="74" r="1.7" fill="#ffe08a"/>
+  <rect x="27" y="52" width="12" height="12" rx="1.5" fill="#91ddf0" stroke="#30333b" stroke-width="3"/>
+  <path d="M33 52v12m-6-6h12" stroke="#fff" stroke-width="2"/>
+  <rect x="62" y="52" width="12" height="12" rx="1.5" fill="#91ddf0" stroke="#30333b" stroke-width="3"/>
+  <path d="M68 52v12m-6-6h12" stroke="#fff" stroke-width="2"/>
+  <path d="M14 86h72" stroke="#68ad55" stroke-width="4" stroke-linecap="round"/>
+ </symbol>
+        <symbol id="figure-borboleta" viewBox="0 0 100 100"><path d="M47 48C37 25 15 20 12 38c-3 15 13 25 33 26-18 7-15 27-3 28 11 1 15-14 13-32m-2-12C63 25 85 20 88 38c3 15-13 25-33 26 18 7 15 27 3 28-11 1-15-14-13-32" fill="#df75cf" stroke="#292b35" stroke-width="4"/><path d="M50 44v42" stroke="#292b35" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="39" r="7" fill="#393348" stroke="#292b35" stroke-width="3"/><path d="M48 36q-8-16-14-14m18 14q8-16 14-14" fill="none" stroke="#292b35" stroke-width="3" stroke-linecap="round"/><path d="M20 40q10-5 18 4M62 44q8-9 18-4M25 75q10-8 18-5m14 0q8-3 18 5" fill="none" stroke="#f6c7ef" stroke-width="4" stroke-linecap="round"/><circle cx="34" cy="53" r="4" fill="#ffd7f7"/><circle cx="66" cy="53" r="4" fill="#ffd7f7"/></symbol>
+        <symbol id="figure-caracol" viewBox="0 0 100 100"><path d="M10 79Q13 69 27 68h62q8 0 8 10v10H10z" fill="#63c957" stroke="#292b35" stroke-width="4"/><path d="M29 76q-1-12 7-20" fill="none" stroke="#292b35" stroke-width="4"/><circle cx="66" cy="52" r="27" fill="#f06caf" stroke="#292b35" stroke-width="4"/><path d="M68 69c-13 0-20-8-19-18 1-10 9-17 19-15 9 2 13 10 9 17-3 5-8 7-13 5-4-1-6-4-5-7 1-2 3-4 6-3" fill="none" stroke="#b83f83" stroke-width="4" stroke-linecap="round"/><path d="M19 72q-2-14 2-23m15 20q2-13 6-22" fill="none" stroke="#397b3b" stroke-width="4" stroke-linecap="round"/><circle cx="21" cy="45" r="6" fill="#fff" stroke="#292b35" stroke-width="3"/><circle cx="43" cy="44" r="6" fill="#fff" stroke="#292b35" stroke-width="3"/><circle cx="22" cy="45" r="2.5" fill="#292b35"/><circle cx="44" cy="44" r="2.5" fill="#292b35"/><path d="M20 59q7 7 14 0" fill="none" stroke="#292b35" stroke-width="2.5" stroke-linecap="round"/></symbol>
+        <symbol id="figure-sol" viewBox="0 0 100 100"><g stroke="#f2a900" stroke-width="8" stroke-linecap="round"><path d="M50 5v17m0 56v17M5 50h17m56 0h17M18 18l12 12m40 40 12 12m0-64L70 30M30 70 18 82"/></g><circle cx="50" cy="50" r="27" fill="#ffd43b" stroke="#e99d00" stroke-width="4"/><circle cx="41" cy="45" r="3" fill="#483b27"/><circle cx="59" cy="45" r="3" fill="#483b27"/><path d="M41 58q9 10 18 0" fill="none" stroke="#483b27" stroke-width="3" stroke-linecap="round"/></symbol>
+        <symbol id="figure-flor" viewBox="0 0 100 100"><path d="M50 52v39" stroke="#398849" stroke-width="7" stroke-linecap="round"/><path d="M49 73Q27 55 24 73q10 13 25 7m3-15q20-20 27-5-5 14-28 12" fill="#62bc61" stroke="#347a43" stroke-width="3"/><g fill="#ff7ab5" stroke="#a93f78" stroke-width="3"><ellipse cx="50" cy="25" rx="11" ry="18"/><ellipse cx="50" cy="25" rx="11" ry="18" transform="rotate(60 50 38)"/><ellipse cx="50" cy="25" rx="11" ry="18" transform="rotate(120 50 38)"/><ellipse cx="50" cy="25" rx="11" ry="18" transform="rotate(180 50 38)"/><ellipse cx="50" cy="25" rx="11" ry="18" transform="rotate(240 50 38)"/><ellipse cx="50" cy="25" rx="11" ry="18" transform="rotate(300 50 38)"/></g><circle cx="50" cy="38" r="12" fill="#ffd84e" stroke="#a77919" stroke-width="3"/></symbol>
+        <symbol id="figure-arvore" viewBox="0 0 100 100"><path d="M43 57h16v37H43z" fill="#9b6037" stroke="#684127" stroke-width="4"/><circle cx="50" cy="37" r="26" fill="#4dbb61" stroke="#28733f" stroke-width="4"/><circle cx="31" cy="49" r="17" fill="#68cf72" stroke="#28733f" stroke-width="4"/><circle cx="68" cy="49" r="17" fill="#68cf72" stroke="#28733f" stroke-width="4"/><circle cx="39" cy="29" r="3" fill="#ffda52"/><circle cx="60" cy="43" r="3" fill="#ffda52"/><path d="M18 94h64" stroke="#67a947" stroke-width="5" stroke-linecap="round"/></symbol>
+        <symbol id="figure-nuvem" viewBox="0 0 100 100"><path d="M24 69a17 17 0 0 1-2-34 27 27 0 0 1 51-7 21 21 0 0 1 7 41z" fill="#d9f1ff" stroke="#548db2" stroke-width="4"/><path d="M36 77l-5 12m25-12-5 12m25-12-5 12" stroke="#57a9da" stroke-width="5" stroke-linecap="round"/><circle cx="43" cy="51" r="3" fill="#354b61"/><circle cx="61" cy="51" r="3" fill="#354b61"/><path d="M44 60q8 7 16 0" fill="none" stroke="#354b61" stroke-width="3" stroke-linecap="round"/></symbol>
+        <symbol id="figure-arco-iris" viewBox="0 0 100 100"><path d="M12 82a38 38 0 0 1 76 0" fill="none" stroke="#ee5353" stroke-width="12"/><path d="M24 82a26 26 0 0 1 52 0" fill="none" stroke="#ffbd38" stroke-width="12"/><path d="M36 82a14 14 0 0 1 28 0" fill="none" stroke="#4b9be8" stroke-width="12"/><path d="M8 83h84" stroke="#547445" stroke-width="5" stroke-linecap="round"/><circle cx="14" cy="30" r="7" fill="#ffe076"/><circle cx="86" cy="24" r="5" fill="#ffe076"/></symbol>
+      </defs>
+    </svg>
+    <a class="fit-back" href="{% url 'atividades:lista' %}">← Voltar às atividades</a>
+    <header class="fit-heading">
+      <span>ATIVIDADE DE ENCAIXE</span>
+      <h1 id="fit-title">{{ titulo }}</h1>
+      <p>{{ descricao }}</p>
+    </header>
+
+    <div class="fit-puzzles" id="fit-puzzles" data-activity-type="{{ atividade }}">
+      {% for item in itens %}
+      <div class="fit-puzzle" data-target="{{ item.id }}" data-name="{{ item.nome }}" data-slot="{{ item.slot }}" data-viewbox="{{ item.viewbox }}">
+        <div class="fit-picture" aria-label="Figura de {{ item.nome }}">
+          <svg class="fit-picture-art" viewBox="0 0 100 100" aria-hidden="true"><use href="#figure-{{ item.id }}" width="100" height="100"></use></svg>
+          <button class="missing-slot slot-{{ item.slot }}" type="button" data-slot="{{ item.id }}" aria-label="Encaixe a peça de {{ item.nome }}"><svg class="slot-content" viewBox="{{ item.viewbox }}" aria-hidden="true"><use href="#figure-{{ item.id }}" width="100" height="100"></use></svg></button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h2 class="fit-pieces-title">Peças</h2>
+    <div class="fit-pieces" id="fit-pieces">
+      {% for item in itens reversed %}
+      <button class="fit-piece" type="button" draggable="true" data-piece="{{ item.id }}" aria-label="Peça: {{ item.nome }}">
+        <svg class="piece-art" viewBox="{{ item.viewbox }}" data-viewbox="{{ item.viewbox }}" aria-hidden="true"><use href="#figure-{{ item.id }}" width="100" height="100"></use></svg><strong>{{ item.nome }}</strong>
+      </button>
+      {% endfor %}
+    </div>
+    <p class="fit-feedback" id="fit-feedback" aria-live="polite" role="status">Escolha uma peça para começar.</p>
+    <div class="fit-controls"><button type="button" id="fit-reset">Começar de novo</button><a href="{% url 'usuarios:inicio' %}">Início</a></div>
+    <form class="fit-csrf" aria-hidden="true">{% csrf_token %}</form>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/encaixe-figuras.js' %}" defer></script>{% endblock %}

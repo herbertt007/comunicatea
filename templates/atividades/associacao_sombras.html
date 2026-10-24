@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/frutas-sombras.css' %}">{% endblock %}
+{% block content %}
+<section class="fruit-activity" aria-labelledby="fruit-title">
+  <div class="fruit-shell">
+    <a class="fruit-back" href="{% url 'atividades:lista' %}">← Voltar às atividades</a>
+    <header class="fruit-heading">
+      <span class="fruit-kicker">ATIVIDADE DE ASSOCIAÇÃO</span>
+      <h1 id="fruit-title">{{ titulo }}</h1>
+      <p>{{ instrucao }}</p>
+    </header>
+
+    <div class="fruit-board" id="fruit-board" data-singular="{{ singular }}" data-plural="{{ plural }}" data-activity-type="{{ tipo }}">
+      <section class="fruit-column" aria-labelledby="fruit-options-title">
+        <h2 id="fruit-options-title">{{ nome_coluna }}</h2>
+        <div class="fruit-pieces">
+          {% for item in itens %}
+          <button class="fruit-piece" type="button" draggable="true" data-fruit="{{ item.id }}" aria-label="{{ item.nome }}">
+            <span class="fruit-emoji" aria-hidden="true">{{ item.emoji }}</span>
+            <span class="fruit-name">{{ item.nome }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="shadow-column" aria-labelledby="fruit-shadows-title">
+        <h2 id="fruit-shadows-title">{{ nome_alvo }}</h2>
+        <div class="fruit-targets">
+          {% for item in itens reversed %}
+          <button class="fruit-target" type="button" data-target="{{ item.id }}" aria-label="Sombra de {{ singular }}">
+            <span class="shadow-emoji" aria-hidden="true">{{ item.emoji }}</span>
+            <span class="target-label">Solte aqui</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
+    <p id="fruit-feedback" class="fruit-feedback" role="status" aria-live="polite">Escolha uma figura para começar.</p>
+    <div class="fruit-actions">
+      <button class="fruit-reset" id="fruit-reset" type="button">Começar de novo</button>
+      <a class="fruit-home" href="{% url 'usuarios:inicio' %}">Início</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/frutas-sombras.js' %}" defer></script>{% endblock %}

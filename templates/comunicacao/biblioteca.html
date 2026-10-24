@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Biblioteca de Pictogramas{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h1 class="fw-black mb-0">🖼️ Biblioteca de Pictogramas</h1>
+      <p style="color:var(--text-2)">{{ pictogramas.count }} pictograma{{ pictogramas.count|pluralize }} disponível{{ pictogramas.count|pluralize:"is" }}</p>
+    </div>
+    {% if user.is_authenticated %}
+    <a href="{% url 'comunicacao:pictograma_criar' %}" class="btn-ctea btn-ctea-primary btn-ctea-sm">
+      <i class="bi bi-plus-circle"></i> Novo pictograma
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- Filtros -->
+  <form method="get" class="mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-6">
+        <input type="text" name="q" value="{{ busca }}" class="form-control" placeholder="🔍 Buscar pictograma...">
+      </div>
+      <div class="col-md-4">
+        <select name="categoria" class="form-select">
+          <option value="">Todas as categorias</option>
+          {% for cat in categorias %}
+          <option value="{{ cat.pk }}" {% if cat.pk|stringformat:'s' == cat_selecionada %}selected{% endif %}>
+            {{ cat.icone }} {{ cat.nome }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn-ctea btn-ctea-primary w-100 justify-content-center">Filtrar</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Pills de categoria -->
+  <div class="cat-pills mb-4">
+    <a href="{% url 'comunicacao:biblioteca' %}" class="cat-pill {% if not cat_selecionada and not busca %}active{% endif %}">
+      Todas
+    </a>
+    {% for cat in categorias %}
+    <a href="?categoria={{ cat.pk }}" class="cat-pill {% if cat.pk|stringformat:'s' == cat_selecionada %}active{% endif %}"
+       style="{% if cat.pk|stringformat:'s' == cat_selecionada %}background:{{ cat.cor }};border-color:{{ cat.cor }}{% endif %}">
+      {{ cat.icone }} {{ cat.nome }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Grid de pictogramas -->
+  {% if pictogramas %}
+  <div class="ctea-lib-grid">
+    {% for pic in pictogramas %}
+    <div class="ctea-lib-card" title="{{ pic.alt_text }}"
+         onclick="falarTexto('{{ pic.palavra }}')" style="cursor:pointer"
+         role="button" aria-label="{{ pic.alt_text }}">
+      {% if pic.imagem %}
+      <img src="{{ pic.imagem.url }}" alt="{{ pic.alt_text }}" style="width:60px;height:60px;object-fit:contain;margin-bottom:0.5rem">
+      {% else %}
+      <div class="lib-emoji">{{ pic.icone_emoji|default:"🖼️" }}</div>
+      {% endif %}
+      <div class="lib-word">{{ pic.palavra }}</div>
+      <div class="lib-cat">{{ pic.categoria.icone }} {{ pic.categoria.nome }}</div>
+      {% if user.is_authenticated %}
+      <div class="mt-2">
+        <a href="{% url 'comunicacao:pictograma_editar' pic.pk %}" class="btn-ctea btn-ctea-outline btn-ctea-sm" style="font-size:0.75rem;padding:0.3rem 0.7rem">
+          ✏️ Editar
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5">
+    <div style="font-size:4rem">🖼️</div>
+    <h3 class="fw-bold mt-3">Nenhum pictograma encontrado</h3>
+    <p style="color:var(--text-2)">Tente outro filtro ou cadastre um novo pictograma</p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'comunicacao:pictograma_criar' %}" class="btn-ctea btn-ctea-primary mt-2">Cadastrar pictograma</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

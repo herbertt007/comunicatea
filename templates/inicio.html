@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="ctea-hero">
+  <div class="container position-relative" style="z-index:1">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="hero-badge">🎓 Trabalho de Conclusão de Curso — AEE</div>
+        <h1>Cada pessoa tem seu jeito de <span style="color:#FBBF24">se comunicar.</span></h1>
+        <p class="tagline">Plataforma de Comunicação Aumentativa e Alternativa para o Atendimento Educacional Especializado</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'atividades:lista' %}" class="btn-ctea btn-ctea-white btn-ctea-lg">
+            <i class="bi bi-play-circle-fill"></i> Começar atividades
+          </a>
+          <a href="{% url 'comunicacao:biblioteca' %}" class="btn-ctea btn-ctea-lg" style="background:rgba(255,255,255,0.15);color:white;border:2px solid rgba(255,255,255,0.4);">
+            <i class="bi bi-grid-3x3-gap"></i> Biblioteca de pictogramas
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center d-none d-lg-block">
+        <div style="font-size:7rem;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.2));animation:pulse 3s infinite">🗣️</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Atividades Rápidas -->
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">🧩 Atividades</h2>
+      <p class="section-sub">Escolha uma atividade para começar</p>
+    </div>
+    <div class="ctea-act-grid">
+      <a href="{% url 'atividades:sentimentos' %}" class="ctea-act-card" style="--card-color:#FF6B6B;--card-color-light:#FFF1F2">
+        <div class="act-icon">😊</div>
+        <h3>Como estou me sentindo?</h3>
+        <p>Expresse seus sentimentos com cartões ilustrados</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:necessidades' %}" class="ctea-act-card" style="--card-color:#38BDF8;--card-color-light:#EFF6FF">
+        <div class="act-icon">🙋</div>
+        <h3>O que eu preciso?</h3>
+        <p>Comunique suas necessidades rapidamente</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:monte_frase' %}" class="ctea-act-card" style="--card-color:#A78BFA;--card-color-light:#F5F3FF">
+        <div class="act-icon">💬</div>
+        <h3>Monte sua frase</h3>
+        <p>Construa frases com pictogramas e palavras</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:escolha' %}" class="ctea-act-card" style="--card-color:#34D399;--card-color-light:#ECFDF5">
+        <div class="act-icon">✨</div>
+        <h3>Escolha o que prefere</h3>
+        <p>Diga o que você gosta entre duas opções</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:encontre' %}" class="ctea-act-card" style="--card-color:#FBBF24;--card-color-light:#FFFBEB">
+        <div class="act-icon">🔍</div>
+        <h3>Encontre o pictograma</h3>
+        <p>Explore e identifique imagens e símbolos</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:rotina' %}" class="ctea-act-card" style="--card-color:#F472B6;--card-color-light:#FDF2F8">
+        <div class="act-icon">📅</div>
+        <h3>Minha rotina visual</h3>
+        <p>Monte e acompanhe a rotina do seu dia</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:sim_nao' %}" class="ctea-act-card" style="--card-color:#FB923C;--card-color-light:#FFF7ED">
+        <div class="act-icon">✅</div>
+        <h3>Sim ou não</h3>
+        <p>Expresse concordância, recusa e incerteza</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:frutas_sombras' %}" class="ctea-act-card" style="--card-color:#6B9B5D;--card-color-light:#EFF7EB">
+        <div class="act-icon">🍎</div>
+        <h3>Leve a fruta até a sombra</h3>
+        <p>Associe cada fruta à sua sombra e ouça o nome ao encontrar o par</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:animais_sombras' %}" class="ctea-act-card" style="--card-color:#6B9B5D;--card-color-light:#EFF7EB">
+        <div class="act-icon">🐘</div>
+        <h3>Leve o animal até a sombra</h3>
+        <p>Associe cada animal à sua sombra e ouça o nome ao encontrar o par</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:encaixe_animais' %}" class="ctea-act-card" style="--card-color:#F29D38;--card-color-light:#FFF4E5">
+        <div class="act-icon">🧩</div>
+        <h3>Encaixe as figuras: animais</h3>
+        <p>Complete as figuras de animais e ouça o nome de cada uma</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+      <a href="{% url 'atividades:encaixe_natureza' %}" class="ctea-act-card" style="--card-color:#34A89A;--card-color-light:#E9F8F5">
+        <div class="act-icon">🌼</div>
+        <h3>Encaixe as figuras: natureza</h3>
+        <p>Complete figuras da natureza e ouça o nome de cada uma</p>
+        <span class="card-go">Começar <i class="bi bi-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Sobre CAA -->
+<section class="section" style="background:white">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <span class="badge mb-2" style="background:var(--primary-light);color:var(--primary);font-size:0.85rem;font-weight:700;padding:0.4rem 0.8rem;border-radius:50px">O que é CAA?</span>
+        <h2 class="section-title">Comunicação Aumentativa e Alternativa</h2>
+        <p class="mt-3" style="color:var(--text-2);line-height:1.8;font-size:1.05rem">
+          A <strong>Comunicação Aumentativa e Alternativa (CAA)</strong> é um conjunto de estratégias, recursos e tecnologias que apoiam ou substituem a fala em pessoas que têm dificuldades para se comunicar verbalmente.
+        </p>
+        <p class="mt-2" style="color:var(--text-2);line-height:1.8;font-size:1.05rem">
+          Por meio de pictogramas, imagens, símbolos e tecnologia, a CAA amplia as possibilidades de expressão e compreensão, promovendo a inclusão e a autonomia.
+        </p>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <span class="badge py-2 px-3 rounded-pill" style="background:#EEF2FF;color:#5B4CF5;font-size:0.9rem">🧩 Pictogramas</span>
+          <span class="badge py-2 px-3 rounded-pill" style="background:#EEF2FF;color:#5B4CF5;font-size:0.9rem">🗣️ Pranchas de comunicação</span>
+          <span class="badge py-2 px-3 rounded-pill" style="background:#EEF2FF;color:#5B4CF5;font-size:0.9rem">🎯 Atividades adaptadas</span>
+          <span class="badge py-2 px-3 rounded-pill" style="background:#EEF2FF;color:#5B4CF5;font-size:0.9rem">♿ Acessibilidade</span>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="ctea-card text-center p-4" style="border-top:4px solid #FF6B6B">
+              <div style="font-size:2.5rem">😊</div>
+              <p class="fw-bold mt-2 mb-0">Sentimentos</p>
+              <small style="color:var(--text-3)">Expresse emoções</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ctea-card text-center p-4" style="border-top:4px solid #38BDF8">
+              <div style="font-size:2.5rem">🙋</div>
+              <p class="fw-bold mt-2 mb-0">Necessidades</p>
+              <small style="color:var(--text-3)">Comunique pedidos</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ctea-card text-center p-4" style="border-top:4px solid #4ECDC4">
+              <div style="font-size:2.5rem">📅</div>
+              <p class="fw-bold mt-2 mb-0">Rotina</p>
+              <small style="color:var(--text-3)">Organize o dia</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ctea-card text-center p-4" style="border-top:4px solid #FBBF24">
+              <div style="font-size:2.5rem">🔍</div>
+              <p class="fw-bold mt-2 mb-0">Exploração</p>
+              <small style="color:var(--text-3)">Aprenda brincando</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área do Professor CTA -->
+{% if not user.is_authenticated %}
+<section class="section" style="background:linear-gradient(135deg,#1E1B4B,#5B4CF5)">
+  <div class="container text-center text-white">
+    <h2 class="fw-black mb-3" style="font-size:2rem">Área do Professor</h2>
+    <p class="mb-4" style="font-size:1.1rem;opacity:0.9">Crie pranchas, gerencie estudantes e acompanhe o desenvolvimento pedagógico</p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:login' %}" class="btn-ctea btn-ctea-white btn-ctea-lg">
+        <i class="bi bi-lock"></i> Entrar
+      </a>
+      <a href="{% url 'usuarios:registro' %}" class="btn-ctea btn-ctea-lg" style="background:rgba(255,255,255,0.15);color:white;border:2px solid rgba(255,255,255,0.4)">
+        <i class="bi bi-person-plus"></i> Criar conta
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

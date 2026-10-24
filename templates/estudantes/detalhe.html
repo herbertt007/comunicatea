@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}{{ estudante.nome_pedagogico }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <a href="{% url 'estudantes:lista' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm mb-4">
+    <i class="bi bi-arrow-left"></i> Voltar
+  </a>
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="ctea-card text-center">
+        <div style="font-size:4rem">👨‍🎓</div>
+        <h2 class="fw-black mt-2 mb-1">{{ estudante.nome_pedagogico }}</h2>
+        <p style="color:var(--text-3)">{{ estudante.codigo }}</p>
+        <span class="badge rounded-pill {% if estudante.ativo %}bg-success{% else %}bg-secondary{% endif %} mb-3">
+          {% if estudante.ativo %}Ativo{% else %}Inativo{% endif %}
+        </span>
+        <p class="small" style="color:var(--text-2)">{{ estudante.observacoes_gerais|default:"Sem observações gerais." }}</p>
+        <div class="d-flex gap-2 justify-content-center mt-3">
+          <a href="{% url 'estudantes:editar' estudante.pk %}" class="btn-ctea btn-ctea-outline btn-ctea-sm">
+            <i class="bi bi-pencil"></i> Editar
+          </a>
+          <a href="{% url 'acompanhamento:observacao_criar' %}?estudante={{ estudante.pk }}" class="btn-ctea btn-ctea-primary btn-ctea-sm">
+            <i class="bi bi-plus"></i> Observação
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="ctea-card mb-4">
+        <h3 class="ctea-card-title"><i class="bi bi-clock-history"></i> Sessões de Atividades</h3>
+        {% if sessoes %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead><tr><th>Atividade</th><th>Data/Hora</th><th>Interação</th></tr></thead>
+            <tbody>
+            {% for s in sessoes %}
+            <tr>
+              <td><strong>{{ s.atividade.icone }} {{ s.atividade.titulo }}</strong></td>
+              <td><small>{{ s.iniciada_em|date:"d/m/Y H:i" }}</small></td>
+              <td><small style="color:var(--text-2)">{{ s.tipo_interacao|default:"—" }}</small></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p style="color:var(--text-3)">Nenhuma sessão registrada para este estudante.</p>
+        {% endif %}
+      </div>
+
+      <div class="ctea-card">
+        <h3 class="ctea-card-title"><i class="bi bi-pencil-square"></i> Observações Pedagógicas</h3>
+        {% if observacoes %}
+        {% for obs in observacoes %}
+        <div class="py-2 border-bottom">
+          <div class="d-flex justify-content-between">
+            <strong>{% if obs.atividade %}{{ obs.atividade.titulo }}{% else %}Geral{% endif %}</strong>
+            <small style="color:var(--text-3)">{{ obs.data_registro|date:"d/m/Y" }}</small>
+          </div>
+          <p class="small mb-0 mt-1" style="color:var(--text-2)">{{ obs.descricao }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p style="color:var(--text-3)">Nenhuma observação registrada.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

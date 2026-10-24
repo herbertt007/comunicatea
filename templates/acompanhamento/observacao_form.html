@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Nova Observação{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <a href="{% url 'acompanhamento:dashboard' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm mb-4">
+    <i class="bi bi-arrow-left"></i> Voltar
+  </a>
+  <div class="ctea-form-wrap">
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem">📝</div>
+      <h1 class="fw-black mt-2" style="font-size:1.6rem">Nova Observação Pedagógica</h1>
+      <p style="color:var(--text-2)">Registre o que observou durante a atividade</p>
+    </div>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'select' or field.field.widget.attrs.get('multiple') %}
+        <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-select{% if field.errors %} is-invalid{% endif %}">
+          <option value="">---------</option>
+          {% for val, lbl in field.field.choices %}
+          {% if val %}<option value="{{ val }}" {% if field.value|stringformat:"s" == val|stringformat:"s" %}selected{% endif %}>{{ lbl }}</option>{% endif %}
+          {% endfor %}
+        </select>
+        {% elif field.field.widget.input_type == 'textarea' %}
+        <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                  class="form-control{% if field.errors %} is-invalid{% endif %}" rows="5"
+                  placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">{{ field.value|default:'' }}</textarea>
+        {% else %}
+        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}"
+               id="{{ field.id_for_label }}" class="form-control{% if field.errors %} is-invalid{% endif %}"
+               value="{{ field.value|default:'' }}">
+        {% endif %}
+        {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-3 mt-3">
+        <button type="submit" class="btn-ctea btn-ctea-primary flex-fill justify-content-center">
+          <i class="bi bi-check-lg"></i> Salvar observação
+        </button>
+        <a href="{% url 'acompanhamento:dashboard' %}" class="btn-ctea btn-ctea-outline">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

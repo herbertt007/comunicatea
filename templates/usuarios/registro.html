@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Cadastrar Professor{% endblock %}
+{% block content %}
+<div class="container" style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem">
+  <div class="ctea-form-wrap w-100">
+    <div class="text-center mb-4">
+      <div style="font-size:3rem">👨‍🏫</div>
+      <h1 class="fw-black mt-2" style="font-size:1.8rem">Criar Conta de Professor</h1>
+      <p style="color:var(--text-2)">Preencha os dados para acessar o ComunicaTEA</p>
+    </div>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+               class="form-control{% if field.errors %} is-invalid{% endif %}"
+               value="{{ field.value|default:'' }}" {% if field.field.required %}required{% endif %}>
+        {% if field.errors %}<div class="invalid-feedback">{{ field.errors.0 }}</div>{% endif %}
+        {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn-ctea btn-ctea-primary w-100 justify-content-center mt-1">
+        <i class="bi bi-person-check"></i> Criar conta
+      </button>
+    </form>
+    <hr class="my-4">
+    <p class="text-center" style="color:var(--text-2)">
+      Já tem conta? <a href="{% url 'usuarios:login' %}" style="color:var(--primary);font-weight:700">Entrar</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

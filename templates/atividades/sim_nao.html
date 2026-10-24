@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Sim ou Não{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(251,146,60,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#EA580C">✅ Sim ou Não</h1>
+        <p class="ctea-act-question" id="perguntaTexto">Carregando...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctea-card mb-4" aria-live="polite">
+    <p class="mb-2"><strong>Como funciona:</strong> ouça a pergunta e escolha uma resposta para dizer o que você quer ou prefere.</p>
+    <p class="mb-0">Não há resposta certa ou errada. Você também pode escolher “Talvez”, “Não sei” ou “Outra opção”.</p>
+    <button class="btn-ctea btn-voice mt-3" type="button" onclick="ouvirPergunta()"><i class="bi bi-volume-up"></i> Ouvir pergunta</button>
+  </div>
+
+  <div id="resposta" class="ctea-response mb-4" style="display:none;border-color:#FB923C;background:linear-gradient(135deg,#FFF7ED,white)">
+    <div id="resp-emoji" class="response-emoji"></div>
+    <div id="resp-texto" class="response-text"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+      <button class="btn-ctea btn-voice" onclick="lerResposta()"><i class="bi bi-volume-up"></i> Ouvir</button>
+      <button class="btn-ctea btn-ctea-outline" onclick="proximaPergunta()"><i class="bi bi-arrow-right-circle"></i> Próxima pergunta</button>
+    </div>
+  </div>
+
+  <div class="ctea-pic-grid justify-content-center" id="cartoes"></div>
+</div>
+
+<script>
+const perguntas = {{ perguntas_json|safe }};
+const cartoes = {{ cartoes|safe }};
+let idx = 0;
+let textoResposta = '';
+
+function falarOuAguardar(texto) {
+  if (typeof window.falarTexto === 'function') {
+    window.falarTexto(texto);
+  } else {
+    window.addEventListener('DOMContentLoaded', () => window.falarTexto?.(texto), { once: true });
+  }
+}
+
+function renderPergunta() {
+  document.getElementById('resposta').style.display = 'none';
+  if (idx >= perguntas.length) {
+    document.getElementById('perguntaTexto').textContent = '🎉 Você respondeu todas as perguntas!';
+    document.getElementById('cartoes').innerHTML = `
+      <div class="text-center py-4 w-100">
+        <button class="btn-ctea btn-ctea-primary" onclick="idx=0;renderPergunta()">
+          <i class="bi bi-arrow-counterclockwise"></i> Recomeçar
+        </button>
+      </div>`;
+    return;
+  }
+  document.getElementById('perguntaTexto').textContent = perguntas[idx];
+  const grid = document.getElementById('cartoes');
+  grid.innerHTML = '';
+  cartoes.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'ctea-pic-card';
+    div.style.setProperty('--card-color', c.cor);
+    div.innerHTML = `<span class="pic-emoji">${c.emoji}</span><span class="pic-label">${c.label}</span>`;
+    div.onclick = () => responder(c.emoji, c.label);
+    div.setAttribute('role','button');
+    div.setAttribute('tabindex','0');
+    grid.appendChild(div);
+  });
+  falarOuAguardar(perguntas[idx]);
+}
+
+function responder(emoji, label) {
+  const msg = `${label}!`;
+  document.getElementById('resp-emoji').textContent = emoji;
+  document.getElementById('resp-texto').textContent = msg;
+  document.getElementById('resposta').style.display = 'block';
+  textoResposta = msg;
+  falarOuAguardar(msg);
+  if (window.registrarSessao) registrarSessao('sim_nao', label);
+}
+
+function lerResposta() { falarOuAguardar(textoResposta); }
+function ouvirPergunta() { falarOuAguardar(perguntas[idx]); }
+function proximaPergunta() { idx++; renderPergunta(); }
+
+renderPergunta();
+</script>
+{% endblock %}

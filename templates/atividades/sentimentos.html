@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Como estou me sentindo?{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(255,107,107,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#DC2626">😊 Como estou me sentindo?</h1>
+        <p class="ctea-act-question">Toque no cartão que mostra como você está agora</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resposta selecionada -->
+  <div id="resposta" class="ctea-response mb-4" style="display:none">
+    <div id="resp-emoji" class="response-emoji"></div>
+    <div id="resp-texto" class="response-text"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+      <button class="btn-ctea btn-voice" onclick="lerTexto()"><i class="bi bi-volume-up"></i> Ouvir</button>
+      <button class="btn-ctea btn-ctea-outline" onclick="limparResposta()"><i class="bi bi-arrow-counterclockwise"></i> Mudar resposta</button>
+    </div>
+  </div>
+
+  <!-- Cartões de sentimentos -->
+  <div class="ctea-pic-grid" id="cartoes">
+    {% for c in cartoes %}
+    <div class="ctea-pic-card" style="--card-color:{{ c.cor }}"
+         onclick="selecionarSentimento(this, '{{ c.emoji }}', '{{ c.label }}', '{{ c.mensagem }}')"
+         role="button" aria-label="{{ c.label }}" tabindex="0">
+      <span class="pic-emoji">{{ c.emoji }}</span>
+      <span class="pic-label">{{ c.label }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <p class="text-center mt-4 small" style="color:var(--text-3)">
+    Você pode selecionar mais de um sentimento, se quiser.
+  </p>
+</div>
+
+<script>
+let selecionados = [];
+function selecionarSentimento(el, emoji, label, msg) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    selecionados.push({emoji, label, msg});
+  } else {
+    selecionados = selecionados.filter(s => s.label !== label);
+  }
+  if (selecionados.length > 0) {
+    const ultimo = selecionados[selecionados.length - 1];
+    document.getElementById('resp-emoji').textContent = selecionados.map(s => s.emoji).join(' ');
+    document.getElementById('resp-texto').textContent = selecionados.length === 1
+      ? ultimo.msg
+      : 'Estou me sentindo: ' + selecionados.map(s => s.label).join(', ') + '.';
+    document.getElementById('resposta').style.display = 'block';
+    window.textoParaLer = document.getElementById('resp-texto').textContent;
+  } else {
+    document.getElementById('resposta').style.display = 'none';
+  }
+  if (window.registrarSessao) registrarSessao('sentimentos', label);
+}
+function limparResposta() {
+  selecionados = [];
+  document.querySelectorAll('.ctea-pic-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('resposta').style.display = 'none';
+}
+function lerTexto() { if (window.falarTexto) falarTexto(window.textoParaLer || ''); }
+</script>
+{% endblock %}

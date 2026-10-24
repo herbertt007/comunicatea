@@ -1,0 +1,76 @@
+.libras-fala[hidden] {
+  display: none !important;
+}
+
+.libras-fala {
+  position: fixed;
+  z-index: 1035;
+  left: 1rem;
+  bottom: 1rem;
+  width: min(22rem, calc(100vw - 6rem));
+  padding: 0.8rem 1rem;
+  color: #183421;
+  background: #fff;
+  border: 2px solid #74a66b;
+  border-radius: 0.85rem;
+  box-shadow: 0 0.25rem 1rem rgb(20 40 20 / 18%);
+}
+
+.libras-fala__titulo {
+  color: #456f40;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.libras-fala__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.libras-fala__fechar {
+  display: inline-grid;
+  width: 1.8rem;
+  height: 1.8rem;
+  place-items: center;
+  padding: 0;
+  color: #183421;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.libras-fala__fechar:hover,
+.libras-fala__fechar:focus-visible {
+  background: #eaf4e8;
+}
+
+.libras-fala__texto {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  user-select: text;
+}
+
+.libras-fala__instrucao {
+  margin: 0.35rem 0 0;
+  color: #46554a;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+@media (max-width: 480px) {
+  .libras-fala {
+    left: 0.5rem;
+    bottom: 0.5rem;
+    width: min(18rem, calc(100vw - 5.5rem));
+    padding: 0.65rem 0.75rem;
+  }
+}

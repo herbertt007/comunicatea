@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Estudantes{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h1 class="fw-black mb-0">👨‍🎓 Meus Estudantes</h1>
+      <p style="color:var(--text-2)">Gerencie os estudantes vinculados a você</p>
+    </div>
+    <a href="{% url 'estudantes:criar' %}" class="btn-ctea btn-ctea-primary">
+      <i class="bi bi-person-plus"></i> Novo estudante
+    </a>
+  </div>
+
+  {% if estudantes %}
+  <div class="row g-3">
+    {% for est in estudantes %}
+    <div class="col-md-6 col-lg-4">
+      <div class="ctea-card h-100" style="border-top:4px solid {% if est.ativo %}var(--primary){% else %}var(--text-3){% endif %}">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h3 class="fw-black mb-0" style="font-size:1.1rem">{{ est.nome_pedagogico }}</h3>
+            <small style="color:var(--text-3)">{{ est.codigo }}</small>
+          </div>
+          <span class="badge rounded-pill {% if est.ativo %}bg-success{% else %}bg-secondary{% endif %}">
+            {% if est.ativo %}Ativo{% else %}Inativo{% endif %}
+          </span>
+        </div>
+        <p class="small mt-2 mb-3" style="color:var(--text-2)">
+          {{ est.observacoes_gerais|truncatechars:60|default:"Sem observações gerais." }}
+        </p>
+        <div class="d-flex gap-2 mt-auto">
+          <a href="{% url 'estudantes:detalhe' est.pk %}" class="btn-ctea btn-ctea-primary btn-ctea-sm flex-fill justify-content-center">
+            <i class="bi bi-eye"></i> Ver
+          </a>
+          <a href="{% url 'estudantes:editar' est.pk %}" class="btn-ctea btn-ctea-outline btn-ctea-sm">
+            <i class="bi bi-pencil"></i>
+          </a>
+          <form method="post" action="{% url 'estudantes:desativar' est.pk %}" style="display:inline">
+            {% csrf_token %}
+            <button class="btn-ctea btn-ctea-sm btn-danger-soft" title="{% if est.ativo %}Desativar{% else %}Ativar{% endif %}">
+              <i class="bi bi-{% if est.ativo %}pause{% else %}play{% endif %}"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5">
+    <div style="font-size:4rem">👨‍🎓</div>
+    <h3 class="fw-bold mt-3">Nenhum estudante cadastrado</h3>
+    <p style="color:var(--text-2)">Comece cadastrando o primeiro estudante</p>
+    <a href="{% url 'estudantes:criar' %}" class="btn-ctea btn-ctea-primary mt-2">
+      <i class="bi bi-person-plus"></i> Cadastrar estudante
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Encontre o pictograma{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(251,191,36,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#D97706">🔍 Encontre o pictograma</h1>
+        <p class="ctea-act-question" id="instrucao">Preparando...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="feedback" class="ctea-response mb-4" style="display:none"></div>
+
+  <div class="ctea-pic-grid" id="cartoes"></div>
+
+  <div class="text-center mt-4">
+    <div id="progresso" style="color:var(--text-3);font-size:0.95rem"></div>
+  </div>
+</div>
+
+<script>
+const rodadas = {{ rodadas_json|safe }};
+let rodadaAtual = 0;
+let tentativas = 0;
+
+function renderRodada() {
+  document.getElementById('feedback').style.display = 'none';
+  if (rodadaAtual >= rodadas.length) {
+    document.getElementById('cartoes').innerHTML = '';
+    document.getElementById('instrucao').textContent = '🎉 Você completou todas as rodadas!';
+    document.getElementById('progresso').innerHTML = `
+      <button class="btn-ctea btn-ctea-primary mt-3" onclick="rodadaAtual=0;renderRodada()">
+        <i class="bi bi-arrow-counterclockwise"></i> Jogar novamente
+      </button>`;
+    return;
+  }
+  const r = rodadas[rodadaAtual];
+  document.getElementById('instrucao').textContent = r.instrucao;
+  document.getElementById('progresso').textContent = `Rodada ${rodadaAtual + 1} de ${rodadas.length}`;
+  tentativas = 0;
+  // Embaralhar cartões
+  const shuffled = [...r.cartoes].sort(() => Math.random() - 0.5);
+  const grid = document.getElementById('cartoes');
+  grid.innerHTML = '';
+  shuffled.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'ctea-pic-card';
+    div.style.setProperty('--card-color', c.correto ? '#22C55E' : '#EF4444');
+    div.innerHTML = `<span class="pic-emoji">${c.emoji}</span><span class="pic-label">${c.label}</span>`;
+    div.onclick = () => verificar(c.correto, c.label, c.emoji, div);
+    div.setAttribute('role', 'button');
+    div.setAttribute('tabindex', '0');
+    grid.appendChild(div);
+  });
+}
+
+function verificar(correto, label, emoji, el) {
+  tentativas++;
+  const fb = document.getElementById('feedback');
+  if (correto) {
+    fb.style.display = 'block';
+    fb.innerHTML = `<div class="response-emoji">✅</div><div class="response-text">Muito bem! Você encontrou: ${label}!</div>`;
+    fb.style.borderColor = '#22C55E';
+    fb.style.background = 'linear-gradient(135deg,#ECFDF5,white)';
+    el.style.background = '#ECFDF5';
+    el.style.borderColor = '#22C55E';
+    falarTexto('Muito bem! Você encontrou ' + label);
+    setTimeout(() => { rodadaAtual++; renderRodada(); }, 2000);
+  } else {
+    el.style.opacity = '0.4';
+    el.style.pointerEvents = 'none';
+    fb.style.display = 'block';
+    fb.innerHTML = `<div class="response-emoji">🤔</div><div class="response-text">Não é esse. Tente outro cartão!</div>`;
+    fb.style.borderColor = '#FBBF24';
+    fb.style.background = 'linear-gradient(135deg,#FFFBEB,white)';
+    falarTexto('Não é esse. Tente outro cartão!');
+  }
+  if (window.registrarSessao) registrarSessao('encontre', label);
+}
+
+renderRodada();
+</script>
+{% endblock %}

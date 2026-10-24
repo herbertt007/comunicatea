@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Escolha o que prefere{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-act-header" style="border-color:rgba(52,211,153,0.3)">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <a href="{% url 'usuarios:inicio' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-house"></i></a>
+      <div>
+        <h1 class="ctea-act-title" style="color:#059669">✨ Escolha o que prefere</h1>
+        <p class="ctea-act-question">O que você prefere? Toque em uma opção</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="resposta" class="ctea-response mb-4" style="display:none;border-color:#34D399;background:linear-gradient(135deg,#ECFDF5,white)">
+    <div id="resp-emoji" class="response-emoji"></div>
+    <div id="resp-texto" class="response-text"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+      <button class="btn-ctea btn-voice" onclick="lerEscolha()"><i class="bi bi-volume-up"></i> Ouvir</button>
+      <button class="btn-ctea btn-ctea-outline" onclick="proximoPar()"><i class="bi bi-arrow-right-circle"></i> Próxima escolha</button>
+    </div>
+  </div>
+
+  <div id="parContainer">
+    <!-- Pares gerados pelo JS -->
+  </div>
+</div>
+
+<script>
+const pares = {{ pares|safe }};
+let parIdx = 0;
+
+function renderPar() {
+  if (parIdx >= pares.length) {
+    document.getElementById('parContainer').innerHTML = `
+      <div class="text-center py-5">
+        <div style="font-size:4rem">🎉</div>
+        <h2 class="fw-black mt-3">Parabéns! Você fez todas as escolhas!</h2>
+        <button class="btn-ctea btn-ctea-primary mt-3" onclick="parIdx=0;renderPar();document.getElementById('resposta').style.display='none'">
+          <i class="bi bi-arrow-counterclockwise"></i> Começar de novo
+        </button>
+      </div>`;
+    return;
+  }
+  const par = pares[parIdx];
+  document.getElementById('parContainer').innerHTML = `
+    <p class="text-center fw-bold mb-4" style="font-size:1.2rem;color:var(--text-2)">O que você prefere?</p>
+    <div class="row g-4 justify-content-center">
+      <div class="col-5 col-md-3">
+        <div class="ctea-pic-card" style="--card-color:#34D399;padding:2rem 1rem"
+             onclick="escolher('${par.opt1.emoji}','${par.opt1.label}')" role="button">
+          <span class="pic-emoji" style="font-size:4rem">${par.opt1.emoji}</span>
+          <span class="pic-label" style="font-size:1.1rem">${par.opt1.label}</span>
+        </div>
+      </div>
+      <div class="col-2 d-flex align-items-center justify-content-center">
+        <span style="font-size:1.5rem;font-weight:900;color:var(--text-3)">ou</span>
+      </div>
+      <div class="col-5 col-md-3">
+        <div class="ctea-pic-card" style="--card-color:#34D399;padding:2rem 1rem"
+             onclick="escolher('${par.opt2.emoji}','${par.opt2.label}')" role="button">
+          <span class="pic-emoji" style="font-size:4rem">${par.opt2.emoji}</span>
+          <span class="pic-label" style="font-size:1.1rem">${par.opt2.label}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function escolher(emoji, label) {
+  const msg = `Eu prefiro ${label}!`;
+  document.getElementById('resp-emoji').textContent = emoji;
+  document.getElementById('resp-texto').textContent = msg;
+  document.getElementById('resposta').style.display = 'block';
+  window._textoEscolha = msg;
+  falarTexto(msg);
+  if (window.registrarSessao) registrarSessao('escolha', label);
+}
+function lerEscolha() { if (window._textoEscolha) falarTexto(window._textoEscolha); }
+function proximoPar() { parIdx++; renderPar(); document.getElementById('resposta').style.display = 'none'; }
+
+renderPar();
+</script>
+{% endblock %}
