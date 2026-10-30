@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/brinquedos-formas.css' %}?v=2">{% endblock %}
+{% block content %}
+<main class="shape-game" id="shapeGame" data-activity-type="{{ atividade }}">
+  <div class="shape-game__shell">
+    <a class="shape-back" href="{% url 'atividades:lista' %}">← Voltar às atividades</a>
+    <header class="shape-heading">
+      <span class="shape-heading__icon" aria-hidden="true">🧩</span>
+      <div>
+        <p class="shape-eyebrow">JOGO DE ENCAIXE</p>
+        <h1>{{ titulo }}</h1>
+        <p class="shape-heading__description">Escolha uma forma e encontre o espaço igual no tabuleiro.</p>
+      </div>
+    </header>
+
+    <section class="shape-intro" id="shapeIntro" aria-labelledby="shapeIntroTitle">
+      <h2 id="shapeIntroTitle">Escolha um nível</h2>
+      <div class="shape-levels" role="group" aria-label="Nível do jogo">
+        <button class="shape-level is-active" type="button" data-level="1" aria-pressed="true">
+          <strong>Nível 1 · Fácil</strong><span>3 formas grandes</span>
+        </button>
+        <button class="shape-level" type="button" data-level="2" aria-pressed="false">
+          <strong>Nível 2 · Intermediário</strong><span>5 formas e mais cores</span>
+        </button>
+        <button class="shape-level" type="button" data-level="3" aria-pressed="false">
+          <strong>Nível 3 · Avançado</strong><span>8 formas diferentes</span>
+        </button>
+      </div>
+      <p class="shape-short-instruction">Arraste uma peça até o espaço igual. Se preferir, toque na peça e depois no espaço.</p>
+      <button class="shape-primary-button" id="shapeStart" type="button">Começar a brincar <span aria-hidden="true">▶</span></button>
+    </section>
+
+    <section class="shape-play" id="shapePlay" aria-label="Tabuleiro de encaixe" hidden>
+      <div class="shape-toolbar">
+        <div class="shape-toolbar__levels" role="group" aria-label="Trocar nível">
+          <button class="shape-level shape-level--small" type="button" data-level="1" aria-pressed="true">Fácil</button>
+          <button class="shape-level shape-level--small" type="button" data-level="2" aria-pressed="false">Intermediário</button>
+          <button class="shape-level shape-level--small" type="button" data-level="3" aria-pressed="false">Avançado</button>
+        </div>
+        <div class="shape-toolbar__actions">
+          <button class="shape-quiet-button" id="shapeSound" type="button" aria-pressed="true">🔊 Som ligado</button>
+          <button class="shape-quiet-button" id="shapeReset" type="button">↻ Recomeçar</button>
+        </div>
+      </div>
+
+      <div class="shape-progress" aria-label="Progresso da atividade">
+        <div class="shape-progress__labels"><strong id="shapeProgressText">0 de 3 peças encaixadas</strong><span id="shapeLevelLabel">Nível 1 · Fácil</span></div>
+        <div class="shape-progress__track" role="progressbar" aria-label="Peças encaixadas" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" id="shapeProgressBar"><span id="shapeProgressFill"></span></div>
+      </div>
+
+      <div class="shape-board-wrap">
+        <div class="shape-board" id="shapeBoard" role="group" aria-label="Tabuleiro de madeira">
+          {% for forma in formas %}
+          <button class="shape-slot" type="button" data-shape="{{ forma.id }}" aria-label="Espaço da forma: {{ forma.nome }}" hidden>
+            <span class="shape-cutout shape-icon shape-icon--{{ forma.id }}" aria-hidden="true"></span>
+            <span class="shape-slot__name">{{ forma.nome }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <h2 class="shape-pieces-title">Peças para encaixar</h2>
+      <div class="shape-tray" id="shapeTray" role="group" aria-label="Peças disponíveis">
+        {% for forma in formas %}
+        <button class="shape-piece" type="button" data-shape="{{ forma.id }}" data-color="{{ forma.cor }}" aria-label="Peça {{ forma.nome }}" hidden>
+          <span class="shape-piece__wood"><span class="shape-icon shape-icon--{{ forma.id }}" aria-hidden="true"></span></span>
+          <strong>{{ forma.nome }}</strong>
+        </button>
+        {% endfor %}
+      </div>
+      <p class="shape-feedback" id="shapeFeedback" aria-live="polite" role="status">Escolha uma peça para começar.</p>
+    </section>
+
+    <section class="shape-complete" id="shapeComplete" aria-labelledby="shapeCompleteTitle" hidden>
+      <div class="shape-complete__stars" aria-hidden="true">⭐ 🎉 ⭐</div>
+      <h2 id="shapeCompleteTitle">Muito bem! Você conseguiu!</h2>
+      <p>Todos os blocos encontraram seu lugar. Excelente trabalho!</p>
+      <button class="shape-primary-button" id="shapePlayAgain" type="button">Jogar novamente <span aria-hidden="true">↻</span></button>
+    </section>
+    <form class="shape-csrf" aria-hidden="true">{% csrf_token %}</form>
+  </div>
+</main>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/brinquedos-formas.js' %}?v=1" defer></script>{% endblock %}

@@ -16,6 +16,7 @@ urlpatterns = [
     path('animais-sombras/', views.animais_sombras, name='animais_sombras'),
     path('encaixe/animais/', views.encaixe_animais, name='encaixe_animais'),
     path('encaixe/natureza/', views.encaixe_natureza, name='encaixe_natureza'),
+    path('encaixe/formas-geometricas/', views.brinquedos_formas, name='brinquedos_formas'),
     path('objeto-acao/', views.objeto_acao, name='objeto_acao'),
     path('registrar-sessao/', views.registrar_sessao, name='registrar_sessao'),
 ]

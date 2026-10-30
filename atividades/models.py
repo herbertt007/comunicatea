@@ -15,6 +15,7 @@ TIPO_ATIVIDADE_CHOICES = [
     ('animais_sombras', 'Leve o animal até a sua sombra'),
     ('encaixe_animais', 'Encaixe as figuras: animais'),
     ('encaixe_natureza', 'Encaixe as figuras: natureza'),
+    ('brinquedos_formas', 'Brinquedos de encaixar: formas geométricas'),
     ('objeto_acao', 'Que objeto pode me ajudar?'),
 ]
 
@@ -61,6 +62,7 @@ class Atividade(models.Model):
             'animais_sombras': 'atividades:animais_sombras',
             'encaixe_animais': 'atividades:encaixe_animais',
             'encaixe_natureza': 'atividades:encaixe_natureza',
+            'brinquedos_formas': 'atividades:brinquedos_formas',
             'objeto_acao': 'atividades:objeto_acao',
         }
         name = url_map.get(self.tipo, 'atividades:lista')

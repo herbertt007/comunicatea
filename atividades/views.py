@@ -292,6 +292,28 @@ def encaixe_natureza(request):
     return _encaixe_figuras(request, 'encaixe_natureza')
 
 
+def brinquedos_formas(request):
+    atividade = 'brinquedos_formas'
+    formas = [
+        {'id': 'circulo', 'nome': 'Círculo', 'cor': '#F45B5B'},
+        {'id': 'quadrado', 'nome': 'Quadrado', 'cor': '#3989E8'},
+        {'id': 'triangulo', 'nome': 'Triângulo', 'cor': '#F5C542'},
+        {'id': 'retangulo', 'nome': 'Retângulo', 'cor': '#45B96B'},
+        {'id': 'losango', 'nome': 'Losango', 'cor': '#F28B38'},
+        {'id': 'estrela', 'nome': 'Estrela', 'cor': '#AC6FE8'},
+        {'id': 'hexagono', 'nome': 'Hexágono', 'cor': '#28B9B1'},
+        {'id': 'oval', 'nome': 'Oval', 'cor': '#E86FA3'},
+    ]
+    dados = {
+        'atividade': atividade,
+        'titulo': 'Brinquedos de Encaixar – Formas Geométricas',
+        'descricao': 'Arraste ou escolha cada bloco e encontre seu espaço no tabuleiro de madeira.',
+        'atividade_obj': Atividade.objects.filter(tipo=atividade, ativo=True).first(),
+        'formas': formas,
+    }
+    return render(request, 'atividades/brinquedos_formas.html', dados)
+
+
 @require_POST
 def registrar_sessao(request):
     """Endpoint AJAX para registrar uma sessão de atividade."""

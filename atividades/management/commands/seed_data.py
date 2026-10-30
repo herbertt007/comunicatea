@@ -204,6 +204,16 @@ class Command(BaseCommand):
                 'icone': '🌼',
             },
             {
+                'titulo': 'Brinquedos de Encaixar – Formas Geométricas',
+                'tipo': 'brinquedos_formas',
+                'descricao': 'Encaixe blocos geométricos coloridos em um tabuleiro de madeira com três níveis de desafio',
+                'objetivo_pedagogico': 'Estimular reconhecimento de formas e cores, coordenação motora fina, percepção visual e raciocínio lógico',
+                'instrucoes': 'A criança escolhe um nível e arrasta ou seleciona cada forma para encaixá-la no espaço correspondente. Respeite o ritmo individual e ofereça incentivo positivo.',
+                'nivel_apoio_visual': 'alto',
+                'cor_tema': '#F59E0B',
+                'icone': '🟦',
+            },
+            {
                 'titulo': 'Que objeto pode me ajudar?',
                 'tipo': 'objeto_acao',
                 'descricao': 'Associe situações do cotidiano a objetos que ajudam em cada ação',

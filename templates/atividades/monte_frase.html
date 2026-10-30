@@ -15,6 +15,7 @@
   <!-- Área da frase -->
   <div class="ctea-sentence-area mb-3" id="fraseArea" aria-label="Frase montada" aria-live="polite">
     <span class="ctea-sentence-placeholder" id="placeholder">Toque nos cartões abaixo para montar sua frase...</span>
+    <button class="frase-libras__texto" id="fraseLibrasTexto" type="button" onclick="prepararFraseLibras()" hidden></button>
   </div>
 
   <!-- Botões de controle -->
@@ -79,20 +80,34 @@ function renderFrase() {
   const area = document.getElementById('fraseArea');
   const placeholder = document.getElementById('placeholder');
   const btnLer = document.getElementById('btnLer');
+  const fraseLibrasTexto = document.getElementById('fraseLibrasTexto');
   area.querySelectorAll('.ctea-chip').forEach(c => c.remove());
   if (palavras.length === 0) {
     placeholder.style.display = '';
     btnLer.disabled = true;
+    fraseLibrasTexto.hidden = true;
+    fraseLibrasTexto.textContent = '';
     return;
   }
   placeholder.style.display = 'none';
   btnLer.disabled = false;
+  const textoFrase = palavras.map(p => p.palavra).join(' ');
+  fraseLibrasTexto.hidden = false;
+  fraseLibrasTexto.textContent = textoFrase;
   palavras.forEach(p => {
     const chip = document.createElement('span');
     chip.className = 'ctea-chip';
-    chip.innerHTML = `<span class="chip-emoji">${p.emoji}</span> ${p.palavra}`;
+    const emoji = document.createElement('span');
+    emoji.className = 'chip-emoji';
+    emoji.textContent = p.emoji;
+    chip.append(emoji, document.createTextNode(` ${p.palavra}`));
     area.appendChild(chip);
   });
+  area.appendChild(fraseLibrasTexto);
+}
+function prepararFraseLibras() {
+  const texto = palavras.map(p => p.palavra).join(' ').trim();
+  if (texto && window.atualizarFalaLibras) window.atualizarFalaLibras(texto);
 }
 function lerFrase() {
   const texto = palavras.map(p => p.palavra).join(' ') + '.';

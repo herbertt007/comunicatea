@@ -241,6 +241,43 @@ img { max-width: 100%; }
 }
 .ctea-chip .chip-emoji { font-size: 1.2rem; }
 
+.ctea-sentence-area .frase-libras__texto {
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  color: #6D28D9;
+  background: linear-gradient(110deg, #DDD6FE, #FBCFE8, #BAE6FD, #D9F99D, #DDD6FE);
+  background-size: 250% 100%;
+  border: 2px solid #A78BFA;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgb(124 58 237 / 18%);
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  appearance: none;
+  cursor: pointer;
+  animation: fraseColorida 7s ease-in-out infinite;
+}
+.ctea-sentence-area .frase-libras__texto:hover,
+.ctea-sentence-area .frase-libras__texto:focus-visible {
+  color: #5B21B6;
+  background-position: 100% 50%;
+  box-shadow: 0 6px 20px rgb(124 58 237 / 28%);
+  outline: 3px solid rgb(124 58 237 / 25%);
+  outline-offset: 2px;
+  transform: translateY(-2px);
+}
+@keyframes fraseColorida {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctea-sentence-area .frase-libras__texto { animation: none; }
+}
+
 /* ── Activity Page Header ── */
 .ctea-act-header {
   padding: 1.75rem 0 1rem;
