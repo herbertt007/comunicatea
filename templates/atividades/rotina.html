@@ -82,13 +82,23 @@ function renderRotina() {
 }
 
 function toggleConcluido(i) {
-  if (concluidos.has(i)) concluidos.delete(i); else concluidos.add(i);
+  if (concluidos.has(i)) {
+    concluidos.delete(i);
+  } else {
+    concluidos.add(i);
+    if (window.falarTexto && rotina[i]) falarTexto(rotina[i].label + ' concluído!');
+  }
   renderRotina();
 }
 function removerEtapa(i) { rotina.splice(i, 1); concluidos.clear(); renderRotina(); }
-function resetarRotina() { rotina = [...etapasPadrao]; concluidos.clear(); renderRotina(); }
+function resetarRotina() { rotina = [...etapasPadrao]; concluidos.clear(); window._parabensFalado = false; renderRotina(); }
 function verificarConclusao() {
-  document.getElementById('conclusao').style.display = concluidos.size === rotina.length && rotina.length > 0 ? 'block' : 'none';
+  const todas = concluidos.size === rotina.length && rotina.length > 0;
+  document.getElementById('conclusao').style.display = todas ? 'block' : 'none';
+  if (todas && !window._parabensFalado) {
+    window._parabensFalado = true;
+    if (window.falarTexto) falarTexto('Parabéns! Você completou sua rotina!');
+  }
 }
 
 function renderDisponiveis() {
@@ -98,7 +108,7 @@ function renderDisponiveis() {
     div.className = 'ctea-lib-card';
     div.style.cursor = 'pointer';
     div.innerHTML = `<div class="lib-emoji">${e.emoji}</div><div class="lib-word">${e.label}</div>`;
-    div.onclick = () => { rotina.push({...e}); renderRotina(); };
+    div.onclick = () => { rotina.push({...e}); renderRotina(); if (window.falarTexto) falarTexto(e.label); };
     grid.appendChild(div);
   });
 }

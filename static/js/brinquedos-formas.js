@@ -125,6 +125,7 @@
     const name = piece.querySelector('strong').textContent;
     feedback.textContent = `${praise[(completed - 1) % praise.length]} ${name} encaixado!`;
     playChime(false);
+    if (window.falarTexto) window.falarTexto(name + '.');
 
     if (window.registrarSessao) window.registrarSessao(root.dataset.activityType, `encaixou ${name}`);
     if (completed === activeShapes.length) {
@@ -132,6 +133,7 @@
       completePanel.hidden = false;
       completePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       playChime(true);
+      if (window.falarTexto) window.falarTexto('Excelente trabalho! Todas as formas encontraram seu lugar.');
       if (window.registrarSessao) window.registrarSessao(root.dataset.activityType, 'concluiu o nível ' + currentLevel);
     }
   }

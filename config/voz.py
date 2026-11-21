@@ -2,6 +2,7 @@
 import asyncio
 import hashlib
 import os
+import tempfile
 from pathlib import Path
 
 from django.conf import settings
@@ -44,22 +45,38 @@ async def sintetizar_voz(request):
     chave_ip = hashlib.sha256(ip.encode('utf-8')).hexdigest()[:20]
     chave_limite = f'voz-limite:{chave_ip}'
     cache.add(chave_limite, 0, timeout=60)
-    if cache.incr(chave_limite) > 30:
+    if cache.incr(chave_limite) > 60:
         return HttpResponse('Limite temporário de falas atingido.', status=429)
 
     chave_audio = hashlib.sha256((VOZ + '\0' + texto).encode('utf-8')).hexdigest()
-    diretorio = Path(settings.MEDIA_ROOT) / 'voz-cache'
+    # Usar tempfile garante escrita mesmo em ambientes serverless como a Vercel (/tmp)
+    diretorio = Path(tempfile.gettempdir()) / 'comunicatea-voz-cache'
     caminho = diretorio / f'{chave_audio}.mp3'
-    if not caminho.is_file():
-        try:
-            diretorio.mkdir(parents=True, exist_ok=True)
-            conteudo = await _gerar_audio(texto)
-            temporario = diretorio / f'{chave_audio}.{os.getpid()}.tmp'
-            temporario.write_bytes(conteudo)
-            os.replace(temporario, caminho)
-        except Exception:
-            return HttpResponse('Não foi possível gerar a voz agora.', status=503)
 
-    resposta = FileResponse(caminho.open('rb'), content_type='audio/mpeg')
-    resposta['Cache-Control'] = 'private, max-age=31536000, immutable'
+    if caminho.is_file():
+        try:
+            resposta = FileResponse(caminho.open('rb'), content_type='audio/mpeg')
+            resposta['Cache-Control'] = 'public, max-age=604800, immutable'
+            resposta['Accept-Ranges'] = 'bytes'
+            return resposta
+        except Exception:
+            pass
+
+    try:
+        conteudo = await _gerar_audio(texto)
+    except Exception:
+        return HttpResponse('Não foi possível gerar a voz agora.', status=503)
+
+    try:
+        diretorio.mkdir(parents=True, exist_ok=True)
+        temporario = diretorio / f'{chave_audio}.{os.getpid()}.tmp'
+        temporario.write_bytes(conteudo)
+        os.replace(temporario, caminho)
+        resposta = FileResponse(caminho.open('rb'), content_type='audio/mpeg')
+    except Exception:
+        # Se o sistema de arquivos falhar, responde diretamente com o conteúdo em memória
+        resposta = HttpResponse(conteudo, content_type='audio/mpeg')
+
+    resposta['Cache-Control'] = 'public, max-age=604800, immutable'
+    resposta['Accept-Ranges'] = 'bytes'
     return resposta

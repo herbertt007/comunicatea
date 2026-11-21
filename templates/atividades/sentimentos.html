@@ -56,6 +56,7 @@ function selecionarSentimento(el, emoji, label, msg) {
       : 'Estou me sentindo: ' + selecionados.map(s => s.label).join(', ') + '.';
     document.getElementById('resposta').style.display = 'block';
     window.textoParaLer = document.getElementById('resp-texto').textContent;
+    if (el.classList.contains('selected') && window.falarTexto) falarTexto(msg);
   } else {
     document.getElementById('resposta').style.display = 'none';
   }

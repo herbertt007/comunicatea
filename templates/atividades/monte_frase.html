@@ -72,6 +72,7 @@ let palavras = [];
 function adicionarPalavra(emoji, palavra) {
   palavras.push({emoji, palavra});
   renderFrase();
+  if (window.falarTexto) falarTexto(palavra);
   if (window.registrarSessao) registrarSessao('monte_frase', palavra);
 }
 function removerUltimo() { palavras.pop(); renderFrase(); }
