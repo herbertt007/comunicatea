@@ -1,1 +1,89 @@
-{% extends 'base.html' %}{% block title %}{{ prancha.titulo }}{% endblock %}{% block content %}<section class="section"><div class="container"><div class="d-flex justify-content-between flex-wrap gap-3"><div><h1>{{ prancha.titulo }}</h1><p>{{ prancha.descricao }}</p></div><a class="btn-ctea btn-ctea-primary align-self-start" href="{% url 'comunicacao:prancha_publica' prancha.pk %}">Abrir modo estudante</a></div><h2 class="h4 mt-4">Cartões da prancha</h2><div class="row g-3">{% for item in itens %}<div class="col-6 col-md-3"><article class="ctea-card p-3 text-center h-100">{% if item.pictograma.imagem %}<img src="{{ item.pictograma.imagem.url }}" alt="{{ item.pictograma.alt_text }}" style="max-width:100%;height:110px;object-fit:contain">{% else %}<div style="font-size:3rem" aria-hidden="true">{{ item.pictograma.icone_emoji|default:'🖼️' }}</div>{% endif %}<p class="fw-bold">{{ item.pictograma.palavra }}</p><form method="post" action="{% url 'comunicacao:prancha_remover_item' prancha.pk item.pk %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger">Remover</button></form></article></div>{% empty %}<p>Adicione cartões para começar.</p>{% endfor %}</div><h2 class="h4 mt-5">Adicionar pictograma</h2><div class="row g-3">{% for pic in pictogramas_disponiveis %}<div class="col-6 col-md-3"><form method="post" action="{% url 'comunicacao:prancha_adicionar_item' prancha.pk %}" class="ctea-card p-3 text-center h-100">{% csrf_token %}<input type="hidden" name="pictograma_id" value="{{ pic.pk }}">{% if pic.imagem %}<img src="{{ pic.imagem.url }}" alt="{{ pic.alt_text }}" style="max-width:100%;height:90px;object-fit:contain">{% else %}<div style="font-size:2.5rem" aria-hidden="true">{{ pic.icone_emoji|default:'🖼️' }}</div>{% endif %}<p>{{ pic.palavra }}</p><button class="btn btn-sm btn-outline-primary">Adicionar</button></form></div>{% empty %}<p>Cadastre pictogramas na biblioteca.</p>{% endfor %}</div></div></section>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}{{ prancha.titulo }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <!-- Cabeçalho -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <div class="d-flex align-items-center gap-2">
+        <a href="{% url 'comunicacao:prancha_lista' %}" class="btn-ctea btn-ctea-outline btn-ctea-sm"><i class="bi bi-arrow-left"></i> Voltar</a>
+        <h1 class="fw-black mb-0" style="font-size:1.8rem">📋 {{ prancha.titulo }}</h1>
+      </div>
+      <p class="mt-1 mb-0" style="color:var(--text-2)">{{ prancha.descricao|default:'Sem descrição' }}</p>
+      {% if prancha.estudante %}
+      <span class="badge bg-primary-subtle text-primary border border-primary mt-2">
+        <i class="bi bi-person me-1"></i> Estudante: {{ prancha.estudante.nome_pedagogico }}
+      </span>
+      {% else %}
+      <span class="badge bg-secondary-subtle text-secondary border border-secondary mt-2">
+        <i class="bi bi-globe me-1"></i> Prancha Geral / Pública
+      </span>
+      {% endif %}
+    </div>
+    <a class="btn-ctea btn-ctea-primary" href="{% url 'comunicacao:prancha_publica' prancha.pk %}">
+      <i class="bi bi-play-circle-fill"></i> Abrir Modo Estudante
+    </a>
+  </div>
+
+  <!-- Cartões da Prancha -->
+  <div class="ctea-card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 fw-bold mb-0">Cartões Atuais nesta Prancha ({{ itens.count }})</h2>
+    </div>
+    <div class="row g-3">
+      {% for item in itens %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+        <div class="ctea-lib-card h-100 text-center p-3 d-flex flex-column align-items-center">
+          {% if item.pictograma.imagem %}
+          <img src="{{ item.pictograma.imagem.url }}" alt="{{ item.pictograma.alt_text }}" style="width:70px;height:70px;object-fit:contain" class="mb-2">
+          {% else %}
+          <div style="font-size:3rem" class="mb-2" aria-hidden="true">{{ item.pictograma.icone_emoji|default:'🖼️' }}</div>
+          {% endif %}
+          <strong class="d-block text-truncate w-100 mb-2">{{ item.pictograma.palavra }}</strong>
+          <form method="post" action="{% url 'comunicacao:prancha_remover_item' prancha.pk item.pk %}" class="mt-auto w-100">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-outline-danger w-100" type="submit" title="Remover da prancha">
+              <i class="bi bi-trash"></i> Remover
+            </button>
+          </form>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-4 text-muted">
+        <p class="mb-1">Esta prancha ainda não possui nenhum pictograma adicionado.</p>
+        <small>Selecione os pictogramas abaixo na biblioteca para compor a prancha.</small>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Adicionar Pictogramas -->
+  <div class="ctea-card p-4">
+    <h2 class="h5 fw-bold mb-3">➕ Adicionar Pictogramas à Prancha</h2>
+    <div class="row g-3">
+      {% for pic in pictogramas_disponiveis %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+        <form method="post" action="{% url 'comunicacao:prancha_adicionar_item' prancha.pk %}" class="ctea-lib-card h-100 text-center p-3 d-flex flex-column align-items-center">
+          {% csrf_token %}
+          <input type="hidden" name="pictograma_id" value="{{ pic.pk }}">
+          {% if pic.imagem %}
+          <img src="{{ pic.imagem.url }}" alt="{{ pic.alt_text }}" style="width:60px;height:60px;object-fit:contain" class="mb-2">
+          {% else %}
+          <div style="font-size:2.5rem" class="mb-2" aria-hidden="true">{{ pic.icone_emoji|default:'🖼️' }}</div>
+          {% endif %}
+          <span class="d-block text-truncate w-100 fw-semibold mb-2" style="font-size:0.9rem">{{ pic.palavra }}</span>
+          <button class="btn btn-sm btn-outline-primary mt-auto w-100" type="submit">
+            <i class="bi bi-plus-lg"></i> Adicionar
+          </button>
+        </form>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-4 text-muted">
+        <p>Nenhum pictograma disponível no acervo.</p>
+        <a href="{% url 'comunicacao:pictograma_criar' %}" class="btn-ctea btn-ctea-primary btn-ctea-sm">Cadastrar pictograma</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

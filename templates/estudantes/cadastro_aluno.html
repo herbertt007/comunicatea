@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro do Aluno{% endblock %}
+{% block content %}
+<div class="container" style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem">
+  <div class="ctea-form-wrap w-100" style="max-width:620px">
+    <div class="text-center mb-4">
+      <div style="font-size:3.5rem">🎒</div>
+      <h1 class="fw-black mt-2" style="font-size:1.8rem">Cadastro do Aluno</h1>
+      <p style="color:var(--text-2)">Preencha seus dados para acessar as atividades</p>
+    </div>
+
+    <form method="post" novalidate id="formCadastroAluno">
+      {% csrf_token %}
+
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <div class="row g-3">
+        <!-- Nome -->
+        <div class="col-12">
+          <label for="id_nome" class="form-label">📝 Nome completo <span class="text-danger">*</span></label>
+          {{ form.nome }}
+          {% if form.nome.errors %}<div class="text-danger small mt-1">{{ form.nome.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Matrícula -->
+        <div class="col-md-6">
+          <label for="id_matricula" class="form-label">🔢 Matrícula <span class="text-danger">*</span></label>
+          {{ form.matricula }}
+          {% if form.matricula.errors %}<div class="text-danger small mt-1">{{ form.matricula.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Série -->
+        <div class="col-md-6">
+          <label for="id_serie" class="form-label">🏫 Série / Turma <span class="text-danger">*</span></label>
+          {{ form.serie }}
+          {% if form.serie.errors %}<div class="text-danger small mt-1">{{ form.serie.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Idade -->
+        <div class="col-md-6">
+          <label for="id_idade" class="form-label">🎂 Idade <span class="text-danger">*</span></label>
+          {{ form.idade }}
+          {% if form.idade.errors %}<div class="text-danger small mt-1">{{ form.idade.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Sexo -->
+        <div class="col-md-6">
+          <label for="id_sexo" class="form-label">👤 Sexo <span class="text-danger">*</span></label>
+          {{ form.sexo }}
+          {% if form.sexo.errors %}<div class="text-danger small mt-1">{{ form.sexo.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Código do Professor -->
+        <div class="col-12">
+          <label for="id_codigo_professor" class="form-label">👨‍🏫 Código do Professor <span class="text-danger">*</span></label>
+          {{ form.codigo_professor }}
+          {% if form.codigo_professor.errors %}<div class="text-danger small mt-1">{{ form.codigo_professor.errors.0 }}</div>{% endif %}
+          <small class="text-muted">Peça este código ao seu professor.</small>
+        </div>
+
+        <hr class="my-2">
+
+        <!-- Senha -->
+        <div class="col-md-6">
+          <label for="id_senha" class="form-label">🔒 Senha <span class="text-danger">*</span></label>
+          {{ form.senha }}
+          {% if form.senha.errors %}<div class="text-danger small mt-1">{{ form.senha.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Confirmar Senha -->
+        <div class="col-md-6">
+          <label for="id_confirmar_senha" class="form-label">🔒 Confirmar senha <span class="text-danger">*</span></label>
+          {{ form.confirmar_senha }}
+          {% if form.confirmar_senha.errors %}<div class="text-danger small mt-1">{{ form.confirmar_senha.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger rounded-3 mt-3">
+        {% for error in form.non_field_errors %}
+        <p class="mb-0">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit" class="btn-ctea btn-ctea-primary w-100 justify-content-center mt-4" id="btnCadastrar">
+        <i class="bi bi-person-check"></i> Cadastrar
+      </button>
+    </form>
+
+    <hr class="my-4">
+    <p class="text-center" style="color:var(--text-2);font-size:0.95rem">
+      Já tem cadastro? <a href="{% url 'estudantes:login_aluno' %}" style="color:var(--primary);font-weight:700">Entrar na minha conta</a>
+    </p>
+    <div class="text-center mt-2">
+      <a href="{% url 'usuarios:inicio' %}" style="color:var(--text-3);font-size:0.9rem"><i class="bi bi-arrow-left"></i> Voltar ao início</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

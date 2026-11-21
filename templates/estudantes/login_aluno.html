@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Entrar — Área do Aluno{% endblock %}
+{% block content %}
+<div class="container" style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem">
+  <div class="ctea-form-wrap w-100" style="max-width:480px">
+    <div class="text-center mb-4">
+      <div style="font-size:3.5rem">🎒</div>
+      <h1 class="fw-black mt-2" style="font-size:1.8rem">Área do Aluno</h1>
+      <p style="color:var(--text-2)">Entre com seu nome e senha para acessar</p>
+    </div>
+
+    <form method="post" novalidate id="formLoginAluno">
+      {% csrf_token %}
+
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <div class="mb-3">
+        <label for="id_nome" class="form-label">👤 Seu nome</label>
+        {{ form.nome }}
+        {% if form.nome.errors %}<div class="text-danger small mt-1">{{ form.nome.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_senha" class="form-label">🔒 Senha</label>
+        {{ form.senha }}
+        {% if form.senha.errors %}<div class="text-danger small mt-1">{{ form.senha.errors.0 }}</div>{% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger rounded-3">
+        {% for error in form.non_field_errors %}
+        <p class="mb-0">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit" class="btn-ctea btn-ctea-primary w-100 justify-content-center mt-2" id="btnEntrarAluno">
+        <i class="bi bi-box-arrow-in-right"></i> Entrar
+      </button>
+    </form>
+
+    <hr class="my-4">
+    <p class="text-center" style="color:var(--text-2);font-size:0.95rem">
+      Não tem cadastro? <a href="{% url 'estudantes:cadastro_aluno' %}" style="color:var(--primary);font-weight:700">Cadastrar-se</a>
+    </p>
+    <div class="text-center mt-3">
+      <a href="{% url 'usuarios:inicio' %}" style="color:var(--text-3);font-size:0.9rem"><i class="bi bi-arrow-left"></i> Voltar ao início</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

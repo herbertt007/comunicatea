@@ -1,3 +1,47 @@
 {% extends 'base.html' %}
 {% block title %}{{ titulo }}{% endblock %}
-{% block content %}<section class="section"><div class="container" style="max-width:760px"><h1>{{ titulo }}</h1><p class="section-sub">Use imagens próprias ou recursos com licença adequada e revise o significado antes de disponibilizar.</p><form method="post" enctype="multipart/form-data" class="ctea-card p-4">{% csrf_token %}{{ form.as_p }}<button class="btn-ctea btn-ctea-primary" type="submit">Salvar pictograma</button> <a class="btn btn-outline-secondary" href="{% url 'comunicacao:biblioteca' %}">Cancelar</a></form></div></section>{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-form-wrap mx-auto" style="max-width:760px">
+    <div class="mb-4">
+      <h1 class="fw-black mb-1">🖼️ {{ titulo }}</h1>
+      <p style="color:var(--text-2)">Adicione ou edite símbolos de comunicação visual com licença apropriada.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="ctea-card p-4" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'checkbox' %}
+        <div class="form-check">
+          {{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        </div>
+        {% elif field.field.widget.input_type == 'select' %}
+        <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-select{% if field.errors %} is-invalid{% endif %}">
+          {% for val, lbl in field.field.choices %}
+          <option value="{{ val }}" {% if field.value|stringformat:'s' == val|stringformat:'s' %}selected{% endif %}>{{ lbl }}</option>
+          {% endfor %}
+        </select>
+        {% elif field.field.widget.input_type == 'file' %}
+        <input type="file" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-control{% if field.errors %} is-invalid{% endif %}">
+        {% if field.value %}
+        <small class="text-muted d-block mt-1">Imagem atual: <a href="{{ field.value.url }}" target="_blank">{{ field.value }}</a></small>
+        {% endif %}
+        {% else %}
+        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-control{% if field.errors %} is-invalid{% endif %}" value="{{ field.value|default:'' }}" placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
+        {% endif %}
+        {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+        {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-2 mt-4">
+        <button class="btn-ctea btn-ctea-primary flex-fill justify-content-center" type="submit">
+          <i class="bi bi-check-lg"></i> Salvar pictograma
+        </button>
+        <a class="btn-ctea btn-ctea-outline" href="{% url 'comunicacao:biblioteca' %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 Django>=4.2,<5.0
 Pillow>=10.0.0
 python-decouple>=3.8
-mysqlclient>=2.2.0
+PyMySQL>=1.1.0
+whitenoise>=6.6.0
 edge-tts>=7.3.1,<8.0

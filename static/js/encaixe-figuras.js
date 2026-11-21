@@ -75,8 +75,19 @@
     }
   }
 
+  /* ── click ───────────────────────────────────────────────── */
+
   pieces.forEach(piece => {
     piece.addEventListener('click', () => choosePiece(piece));
+  });
+
+  slots.forEach(slot => {
+    slot.addEventListener('click', () => fitPiece(slot, selected));
+  });
+
+  /* ── HTML5 drag (desktop) ────────────────────────────────── */
+
+  pieces.forEach(piece => {
     piece.addEventListener('dragstart', event => {
       choosePiece(piece);
       event.dataTransfer.setData('text/plain', piece.dataset.piece);
@@ -85,7 +96,6 @@
   });
 
   slots.forEach(slot => {
-    slot.addEventListener('click', () => fitPiece(slot, selected));
     slot.addEventListener('dragover', event => {
       if (!slot.disabled) {
         event.preventDefault();
@@ -101,9 +111,105 @@
     });
   });
 
+  /* ── Touch drag (celular / tablet) ───────────────────────── */
+
+  let dragPiece = null;
+  let dragClone = null;
+  let touchOffsetX = 0;
+  let touchOffsetY = 0;
+
+  function getSlotUnder(x, y) {
+    if (dragClone) dragClone.style.display = 'none';
+    const el = document.elementFromPoint(x, y);
+    if (dragClone) dragClone.style.display = '';
+    if (!el) return null;
+    return el.closest('.missing-slot');
+  }
+
+  pieces.forEach(piece => {
+    piece.addEventListener('touchstart', e => {
+      if (piece.disabled) return;
+      e.preventDefault();
+
+      dragPiece = piece;
+      choosePiece(piece);
+
+      const touch = e.touches[0];
+      const rect = piece.getBoundingClientRect();
+      touchOffsetX = touch.clientX - rect.left;
+      touchOffsetY = touch.clientY - rect.top;
+
+      dragClone = piece.cloneNode(true);
+      dragClone.classList.add('fit-drag-clone');
+      dragClone.style.cssText = `
+        position: fixed;
+        z-index: 9999;
+        pointer-events: none;
+        width: ${rect.width}px;
+        height: ${rect.height}px;
+        opacity: 0.88;
+        transform: scale(1.08);
+        left: ${touch.clientX - touchOffsetX}px;
+        top: ${touch.clientY - touchOffsetY}px;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.18);
+        transition: none;
+        background: #fbfdf9;
+      `;
+      document.body.appendChild(dragClone);
+      piece.style.opacity = '0.35';
+    }, { passive: false });
+  });
+
+  document.addEventListener('touchmove', e => {
+    if (!dragClone) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    dragClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+    dragClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+
+    slots.forEach(s => s.classList.remove('is-over'));
+    const slot = getSlotUnder(touch.clientX, touch.clientY);
+    if (slot && !slot.disabled) {
+      slot.classList.add('is-over');
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', e => {
+    if (!dragClone || !dragPiece) return;
+
+    const touch = e.changedTouches[0];
+    const slot = getSlotUnder(touch.clientX, touch.clientY);
+
+    slots.forEach(s => s.classList.remove('is-over'));
+
+    if (slot) {
+      fitPiece(slot, dragPiece);
+    }
+
+    dragClone.remove();
+    dragClone = null;
+    if (dragPiece && !dragPiece.disabled) {
+      dragPiece.style.opacity = '';
+    }
+    dragPiece = null;
+  });
+
+  document.addEventListener('touchcancel', () => {
+    if (dragClone) dragClone.remove();
+    dragClone = null;
+    if (dragPiece) dragPiece.style.opacity = '';
+    dragPiece = null;
+    slots.forEach(s => s.classList.remove('is-over'));
+  });
+
+  /* ── Reset ───────────────────────────────────────────────── */
+
   document.getElementById('fit-reset').addEventListener('click', () => {
     selected = null;
     completed = 0;
+    dragPiece = null;
+    if (dragClone) { dragClone.remove(); dragClone = null; }
     const shuffledSlots = shuffle(Object.keys(slotViews));
     puzzles.forEach((puzzle, index) => {
       const position = shuffledSlots[index];
@@ -121,6 +227,7 @@
     shuffle(pieces).forEach(piece => tray.appendChild(piece));
     pieces.forEach(piece => {
       piece.disabled = false;
+      piece.style.opacity = '';
       piece.classList.remove('is-selected');
     });
     puzzles.forEach(puzzle => puzzle.classList.remove('is-complete'));

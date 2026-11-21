@@ -1,1 +1,44 @@
-{% extends 'base.html' %}{% block title %}{{ titulo }}{% endblock %}{% block content %}<section class="section"><div class="container" style="max-width:700px"><h1>{{ titulo }}</h1><form method="post" class="ctea-card p-4">{% csrf_token %}{{ form.as_p }}<button class="btn-ctea btn-ctea-primary">Salvar</button> <a class="btn btn-outline-secondary" href="{% url 'comunicacao:prancha_lista' %}">Cancelar</a></form></div></section>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-form-wrap mx-auto" style="max-width:700px">
+    <div class="mb-4">
+      <h1 class="fw-black mb-1">📋 {{ titulo }}</h1>
+      <p style="color:var(--text-2)">Defina os dados da prancha de comunicação aumentativa e alternativa</p>
+    </div>
+
+    <form method="post" class="ctea-card p-4" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'checkbox' %}
+        <div class="form-check">
+          {{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        </div>
+        {% elif field.name == 'descricao' %}
+        <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-control{% if field.errors %} is-invalid{% endif %}" rows="3">{{ field.value|default:'' }}</textarea>
+        {% elif field.field.widget.input_type == 'select' %}
+        <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-select{% if field.errors %} is-invalid{% endif %}">
+          {% for val, lbl in field.field.choices %}
+          <option value="{{ val }}" {% if field.value|stringformat:'s' == val|stringformat:'s' %}selected{% endif %}>{{ lbl }}</option>
+          {% endfor %}
+        </select>
+        {% else %}
+        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-control{% if field.errors %} is-invalid{% endif %}" value="{{ field.value|default:'' }}">
+        {% endif %}
+        {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+        {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn-ctea btn-ctea-primary flex-fill justify-content-center">
+          <i class="bi bi-check-lg"></i> Salvar prancha
+        </button>
+        <a class="btn-ctea btn-ctea-outline" href="{% url 'comunicacao:prancha_lista' %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,1 +1,54 @@
-{% extends 'base.html' %}{% block title %}Acessibilidade{% endblock %}{% block content %}<section class="section"><div class="container" style="max-width:700px"><h1>Preferências de acessibilidade</h1><form method="post" class="ctea-card p-4">{% csrf_token %}<label class="d-block mb-3"><input type="checkbox" name="audio" {% if perfil.get_preferencia.audio %}checked{% endif %}> Áudio habilitado</label><label class="d-block mb-3"><input type="checkbox" name="animacoes" {% if perfil.get_preferencia.animacoes %}checked{% endif %}> Animações</label><label class="d-block mb-3"><input type="checkbox" name="alto_contraste" {% if perfil.get_preferencia.alto_contraste %}checked{% endif %}> Alto contraste</label><label class="d-block mb-3"><input type="checkbox" name="fonte_grande" {% if perfil.get_preferencia.fonte_grande %}checked{% endif %}> Fonte ampliada</label><button class="btn-ctea btn-ctea-primary">Salvar preferências</button></form></div></section>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Preferências de Acessibilidade{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="ctea-form-wrap mx-auto" style="max-width:700px">
+    <div class="mb-4">
+      <h1 class="fw-black mb-1">♿ Preferências de Acessibilidade</h1>
+      <p style="color:var(--text-2)">Personalize a experiência visual e sensorial de acordo com as necessidades do usuário</p>
+    </div>
+
+    <form method="post" class="ctea-card p-4">
+      {% csrf_token %}
+      <div class="form-check form-switch mb-3 p-3 rounded-3" style="background:var(--bg-card);border:1px solid var(--border)">
+        <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="pref_audio" name="audio" {% if perfil.get_preferencia.audio %}checked{% endif %}>
+        <label class="form-check-label fw-bold" for="pref_audio">
+          🔊 Áudio e Síntese de Voz Habilitados
+          <small class="d-block fw-normal text-muted">Pronúncia por voz dos cartões e frases selecionadas.</small>
+        </label>
+      </div>
+
+      <div class="form-check form-switch mb-3 p-3 rounded-3" style="background:var(--bg-card);border:1px solid var(--border)">
+        <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="pref_anim" name="animacoes" {% if perfil.get_preferencia.animacoes %}checked{% endif %}>
+        <label class="form-check-label fw-bold" for="pref_anim">
+          ✨ Efeitos e Animações
+          <small class="d-block fw-normal text-muted">Desative para reduzir sobrecarga sensorial ou distrações motoras.</small>
+        </label>
+      </div>
+
+      <div class="form-check form-switch mb-3 p-3 rounded-3" style="background:var(--bg-card);border:1px solid var(--border)">
+        <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="pref_contraste" name="alto_contraste" {% if perfil.get_preferencia.alto_contraste %}checked{% endif %}>
+        <label class="form-check-label fw-bold" for="pref_contraste">
+          🌓 Modo Alto Contraste
+          <small class="d-block fw-normal text-muted">Aumenta a distinção de bordas, fundos e textos para baixa visão.</small>
+        </label>
+      </div>
+
+      <div class="form-check form-switch mb-4 p-3 rounded-3" style="background:var(--bg-card);border:1px solid var(--border)">
+        <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="pref_fonte" name="fonte_grande" {% if perfil.get_preferencia.fonte_grande %}checked{% endif %}>
+        <label class="form-check-label fw-bold" for="pref_fonte">
+          🔤 Fonte Ampliada
+          <small class="d-block fw-normal text-muted">Aumenta o tamanho da tipografia para melhor legibilidade.</small>
+        </label>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button class="btn-ctea btn-ctea-primary flex-fill justify-content-center" type="submit">
+          <i class="bi bi-check-lg"></i> Salvar preferências
+        </button>
+        <a href="{% url 'usuarios:dashboard' %}" class="btn-ctea btn-ctea-outline">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@
 .fruit-board { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 5vw, 4.5rem); max-width: 780px; margin: 1.8rem auto 0; }
 .fruit-column h2, .shadow-column h2 { font-size: 1rem; color: #526552; font-weight: 900; margin-bottom: .8rem; text-align: center; }
 .fruit-pieces, .fruit-targets { display: grid; gap: .65rem; }
-.fruit-piece, .fruit-target { min-height: 88px; border: 2px solid #e5ebe2; border-radius: 18px; background: #fbfdf9; display: flex; align-items: center; justify-content: center; gap: .8rem; cursor: pointer; transition: transform .16s ease, border-color .16s ease, background .16s ease; touch-action: manipulation; }
+.fruit-piece, .fruit-target { min-height: 88px; border: 2px solid #e5ebe2; border-radius: 18px; background: #fbfdf9; display: flex; align-items: center; justify-content: center; gap: .8rem; cursor: pointer; transition: transform .16s ease, border-color .16s ease, background .16s ease; touch-action: none; -webkit-user-select: none; user-select: none; }
 .fruit-piece:hover, .fruit-target:hover { transform: translateY(-2px); border-color: #9cbd91; }
 .fruit-piece:focus-visible, .fruit-target:focus-visible, .fruit-reset:focus-visible, .fruit-home:focus-visible { outline: 4px solid #f0bc4a; outline-offset: 3px; }
 .fruit-piece.is-selected { border-color: #517d48; background: #eff7eb; box-shadow: 0 0 0 3px #e2efdc; }
